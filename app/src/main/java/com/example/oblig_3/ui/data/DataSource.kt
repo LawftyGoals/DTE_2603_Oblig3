@@ -7,15 +7,26 @@ import com.example.oblig_3.R
 class DataSource {
     val artists = listOf(
         Artist(1L, "Jack", "Jackson"),
-        Artist(2L, "Jane", "Bethdaughter"),
+        Artist(2L, "Jane", "Janedaughter"),
         Artist(3L, "Zack", "Zackson"),
         Artist(4L, "Dame", "Damedaughter")
     )
 
     val photos = listOf(
-        Photo(1L, "My first attempt", R.drawable.image1, artists[0], Category.NATURE, )
+        Photo(1L, "My first attempt", R.drawable.image1, artists[0], Category.NATURE, 100f ),
+        Photo(1L, "My first attempt", R.drawable.image2, artists[1], Category.FOOD, 150f ),
+        Photo(1L, "My first attempt", R.drawable.image3, artists[2], Category.SPORT, 180f ),
+        Photo(1L, "My first attempt", R.drawable.image4, artists[3], Category.NATURE, 190f ),
+        Photo(1L, "My first attempt", R.drawable.image5, artists[0], Category.FOOD, 10f ),
+        Photo(1L, "My first attempt", R.drawable.image6, artists[1], Category.SPORT, 120f ),
+        Photo(1L, "My first attempt", R.drawable.image7, artists[2], Category.NATURE, 130f ),
+        Photo(1L, "My first attempt", R.drawable.image8, artists[3], Category.FOOD, 140f ),
+        Photo(1L, "My first attempt", R.drawable.image9, artists[0], Category.SPORT, 150f ),
+        Photo(1L, "My first attempt", R.drawable.image10, artists[1], Category.NATURE, 160f )
 
     )
+
+    val photoCategories = Category.entries.toList()
 
 
 }
