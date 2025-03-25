@@ -18,9 +18,9 @@ import com.example.oblig_3.ui.data.Category
 import com.example.oblig_3.ui.data.DataSource
 
 @Composable
-fun <T> FilterScreen(modifier: Modifier = Modifier, filterContent: List<T> = listOf<T>()) {
+fun <T> FilterScreen(modifier: Modifier = Modifier, filterContent: List<T> = listOf()) {
     Column(modifier = modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        filterContent.mapIndexed { index, filter ->
+        filterContent.map { filter ->
                 CategoryButton(filter= filter)
         }
 
@@ -52,5 +52,5 @@ fun <T> CategoryButton(modifier: Modifier = Modifier, filter: T){
 @Preview(showBackground = true)
 @Composable
 fun FilterPreview() {
-    FilterScreen(filterContent = DataSource().photoCategories)
+    FilterScreen(filterContent = DataSource().artists)
 }

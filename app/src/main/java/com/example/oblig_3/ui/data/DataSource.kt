@@ -9,7 +9,8 @@ class DataSource {
         Artist(1L, "Jack", "Jackson"),
         Artist(2L, "Jane", "Janedaughter"),
         Artist(3L, "Zack", "Zackson"),
-        Artist(4L, "Dame", "Damedaughter")
+        Artist(4L, "Dame", "Damedaughter"),
+        Artist(5L, "Cleatus", "Cleatusson")
     )
 
     val photos = listOf(
