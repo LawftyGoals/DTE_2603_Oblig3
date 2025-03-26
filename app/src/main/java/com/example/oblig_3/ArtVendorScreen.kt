@@ -14,11 +14,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.oblig_3.ui.ArtVendorViewModel
 
@@ -30,13 +28,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.oblig_3.ui.FilterScreen
+import com.example.oblig_3.ui.ImagePreviewScreen
+import com.example.oblig_3.ui.ImageScreen
 import com.example.oblig_3.ui.StartOrderScreen
 import com.example.oblig_3.ui.data.DataSource
 
 
 enum class ArtVendorScreen(@StringRes val title: Int) {
     Start(title = R.string.visible_name),
-    Filter(title = R.string.filter_screen)
+    Filter(title = R.string.filter_screen),
+    Images(title = R.string.images_screen),
+    ImagePreview(title = R.string.image_preview_screen)
 
 }
 
@@ -72,7 +74,10 @@ fun ArtVendorApp(viewModel: ArtVendorViewModel = viewModel(), navController: Nav
         NavHost(
             navController = navController,
             startDestination = ArtVendorScreen.Start.name,
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(innerPadding)
         ){
             composable(route=ArtVendorScreen.Start.name) {
                 StartOrderScreen(onNextButtonClicked = {
@@ -83,6 +88,13 @@ fun ArtVendorApp(viewModel: ArtVendorViewModel = viewModel(), navController: Nav
             composable (route = ArtVendorScreen.Filter.name) {
                 FilterScreen(filterContent = DataSource.artists)
             }
+            composable(route = ArtVendorScreen.Images.name) {
+                ImageScreen()
+            }
+            composable(route = ArtVendorScreen.ImagePreview.name) {
+                ImagePreviewScreen(photo = DataSource.photos[0])
+            }
+
 
         }
     }

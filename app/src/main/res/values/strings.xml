@@ -2,6 +2,11 @@
     <string name="app_name">Oblig_3</string>
     <string name="placeholder">PLACEHOLDER</string>
     <string name="visible_name">Kunsthandler</string>
+    <string name="no_images_found">Ingen bilder funnet</string>
     <string name="filter_screen">Velg filter</string>
     <string name="back_button">Tilbake</string>
+    <string name="images_screen">Bilder</string>
+    <string name="choose_border_and_size">Velg ramme og størrelse</string>
+    <string name="chose_border_size">Velg rammebredde</string>
+    <string name="image_preview_screen">Detaljer</string>
 </resources>

@@ -27,8 +27,12 @@ object DataSource {
 
     )
 
-    val photoCategories = Category.entries.toList()
 
+    val frames = FrameType.entries.toList()
+
+    val photoSizes = PhotoSize.entries.toList()
+
+    val frameSizes = listOf(10, 15, 20)
 
 }
 
