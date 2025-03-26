@@ -52,5 +52,5 @@ fun <T> CategoryButton(modifier: Modifier = Modifier, filter: T){
 @Preview(showBackground = true)
 @Composable
 fun FilterPreview() {
-    FilterScreen(filterContent = DataSource().artists)
+    FilterScreen(filterContent = DataSource.artists)
 }

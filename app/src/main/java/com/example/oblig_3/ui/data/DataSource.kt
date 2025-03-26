@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.example.oblig_3.R
 
-class DataSource {
+object DataSource {
     val artists = listOf(
         Artist(1L, "Jack", "Jackson"),
         Artist(2L, "Jane", "Janedaughter"),
@@ -60,6 +60,11 @@ enum class Category {
     NATURE(),
     FOOD(),
     SPORT()
+}
+
+enum class Filters {
+    ARTIST(),
+    CATEGORY()
 }
 
 enum class FrameType(val extraPrice: Float, val color: Color = Color.Yellow) {

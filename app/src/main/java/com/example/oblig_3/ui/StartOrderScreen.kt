@@ -14,18 +14,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.oblig_3.R
+import com.example.oblig_3.ui.data.Filters
 
 
 @Composable
-fun StartOrderScreen(modifier: Modifier = Modifier){
+fun StartOrderScreen(modifier: Modifier = Modifier, onNextButtonClicked: (Filters) -> Unit = {}){
 
     Column(modifier = modifier.padding(8.dp), verticalArrangement = Arrangement.SpaceBetween) {
         Text(stringResource(R.string.placeholder))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
-            Button(onClick = {Log.i("STARTSCREEN", "onclick")}) {
+            Button(onClick = { onNextButtonClicked(Filters.ARTIST) }) {
                 Text(stringResource(R.string.placeholder))
             }
-            Button(onClick = {Log.i("STARTSCREEN", "onclick")}) {
+            Button(onClick = { onNextButtonClicked(Filters.CATEGORY) }) {
                 Text(stringResource(R.string.placeholder))
             }
         }

@@ -2,4 +2,6 @@
     <string name="app_name">Oblig_3</string>
     <string name="placeholder">PLACEHOLDER</string>
     <string name="visible_name">Kunsthandler</string>
+    <string name="filter_screen">Velg filter</string>
+    <string name="back_button">Tilbake</string>
 </resources>
