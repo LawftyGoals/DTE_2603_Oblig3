@@ -18,4 +18,8 @@
     <string name="small">Liten</string>
     <string name="medium">Medium</string>
     <string name="large">Stor</string>
+    <string name="purchase">Til betaling</string>
+    <string name="total_price">Totalpris:</string>
+    <string name="pay">Betal</string>
+    <string name="unimplemented">IKKE IMPLEMENTERT</string>
 </resources>

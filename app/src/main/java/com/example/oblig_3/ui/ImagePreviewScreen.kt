@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,18 +31,19 @@ import com.example.oblig_3.ui.data.FrameType
 import com.example.oblig_3.ui.data.Photo
 import com.example.oblig_3.ui.data.PhotoSize
 import com.example.oblig_3.ui.data.PurchaseItem
+import com.example.oblig_3.ui.data.testPhoto
 
 
 @Composable
 fun ImagePreviewScreen(
     modifier: Modifier = Modifier,
-    photo: Photo?,
+    photo: Photo= testPhoto,
     onNextButtonClicked: (PurchaseItem?) -> Unit
 ) {
 
     var purchaseItem by remember { mutableStateOf(PurchaseItem(photo)) }
 
-    if (photo == null) {
+    if (photo.id == -1L) {
         Text(stringResource(R.string.no_photo_chosen))
     } else {
         val image = painterResource(photo.imageResId)

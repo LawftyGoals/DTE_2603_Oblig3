@@ -1,6 +1,5 @@
 package com.example.oblig_3.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,10 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,13 +24,19 @@ import com.example.oblig_3.ui.data.PurchaseItem
 
 
 @Composable
-fun StartOrderScreen(modifier: Modifier = Modifier, purchaseItemList: List<PurchaseItem>, onNextButtonClicked: (Filters) -> Unit = {}){
+fun StartOrderScreen(
+    modifier: Modifier = Modifier,
+    purchaseItemList: List<PurchaseItem>,
+    onDeleteClicked: (Long) -> Unit,
+    onNextButtonClicked: (Filters) -> Unit = {},
+    onPurchaseClicked: () -> Unit = {}
+) {
 
-    var totalCost by remember { mutableFloatStateOf(calculateTotalPrice(purchaseItemList)) }
+    val totalCost = calculateTotalPrice(purchaseItemList)
 
     Column(modifier = modifier.padding(8.dp), verticalArrangement = Arrangement.SpaceBetween) {
         Text(stringResource(R.string.placeholder))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Button(onClick = { onNextButtonClicked(Filters.ARTIST) }) {
                 Text(stringResource(R.string.placeholder))
             }
@@ -48,37 +49,50 @@ fun StartOrderScreen(modifier: Modifier = Modifier, purchaseItemList: List<Purch
 
         Text(stringResource(R.string.placeholder) + "$totalCost")
 
-        if(purchaseItemList.count()> 0){
+        if (purchaseItemList.count() > 0) {
 
-            Column(modifier= Modifier.padding(8.dp)){
-                purchaseItemList.map {purchaseItem ->
-                    PurchaseItemCard(purchaseItem = purchaseItem)}
+            Column(modifier = Modifier.padding(8.dp)) {
+                purchaseItemList.map { purchaseItem ->
+                    PurchaseItemCard(
+                        purchaseItem = purchaseItem,
+                        onDeleteClicked = onDeleteClicked)
+                }
             }
         }
 
-        Button(modifier = Modifier.fillMaxWidth(), onClick = {Log.i("STARTSCREEN", "onclick")}) {
-            Text(stringResource(R.string.placeholder))
+        Button(modifier = Modifier.fillMaxWidth(), onClick = onPurchaseClicked) {
+            Text(stringResource(R.string.purchase))
         }
     }
 }
 
 
 @Composable
-fun PurchaseItemCard(modifier: Modifier = Modifier, purchaseItem: PurchaseItem){
-    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
-        Column(modifier = Modifier.weight(1f)){
-            Text(text=purchaseItem.photo?.artist?.name.toString())
-            Text(text=purchaseItem.photo?.artist?.familyName.toString())
+fun PurchaseItemCard(
+    modifier: Modifier = Modifier,
+    purchaseItem: PurchaseItem,
+    onDeleteClicked: (Long) -> Unit
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = purchaseItem.photo.artist.name.toString())
+            Text(text = purchaseItem.photo.artist.familyName.toString())
         }
-        Column(modifier = Modifier.weight(1f)){
-            Text(text=stringResource(purchaseItem.frameType.title))
-            Text(text=stringResource(purchaseItem.size.title))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = stringResource(purchaseItem.frameType.title))
+            Text(text = stringResource(purchaseItem.size.title))
         }
-        Column(modifier = Modifier.weight(1f)){
-            Text(text=purchaseItem.frameSize.size.toString())
-            Text(text=purchaseItem.getCost().toString())
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = purchaseItem.frameSize.size.toString())
+            Text(text = purchaseItem.size.size.toString())
         }
-        IconButton(modifier = Modifier.weight(1f), onClick={Log.i("STARTSCREEN DELETE PURCAHSE ITEM", "PLACEHOLLDER")}){
+        IconButton(
+            modifier = Modifier.weight(1f),
+            onClick = { onDeleteClicked(purchaseItem.photo.id) }) {
             Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete purchase item")
         }
     }
@@ -88,5 +102,11 @@ fun PurchaseItemCard(modifier: Modifier = Modifier, purchaseItem: PurchaseItem){
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-    StartOrderScreen(purchaseItemList = listOf(PurchaseItem(DataSource.photos[0]), PurchaseItem(DataSource.photos[9])))
+    StartOrderScreen(
+        onDeleteClicked = TODO(),
+        purchaseItemList = listOf(
+            PurchaseItem(DataSource.photos[0]),
+            PurchaseItem(DataSource.photos[9])
+        )
+    )
 }

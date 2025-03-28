@@ -1,14 +1,12 @@
 package com.example.oblig_3.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.oblig_3.ui.data.ArtPurchaseUiState
 import com.example.oblig_3.ui.data.Artist
 import com.example.oblig_3.ui.data.Category
 import com.example.oblig_3.ui.data.Filters
-import com.example.oblig_3.ui.data.FrameSize
-import com.example.oblig_3.ui.data.FrameType
 import com.example.oblig_3.ui.data.Photo
-import com.example.oblig_3.ui.data.PhotoSize
 import com.example.oblig_3.ui.data.PurchaseItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,10 +30,11 @@ class ArtVendorViewModel: ViewModel() {
     fun deleteFromPurchaseItem(purchaseItemId: Long){
         _uiState.update{
                 currentState ->
-            val purchaseItemList = currentState.purchaseItemList.filter { purchaseItem -> purchaseItem.photo?.id != purchaseItemId }
+            val purchaseItemList = currentState.purchaseItemList.filter { purchaseItem -> purchaseItem.photo.id != purchaseItemId }
             currentState.copy(purchaseItemList = purchaseItemList)
 
         }
+        Log.i("PURCHASEITEMLIST", uiState.value.purchaseItemList.count().toString())
     }
 
     fun updateChosenFilter(filter: Filters){
