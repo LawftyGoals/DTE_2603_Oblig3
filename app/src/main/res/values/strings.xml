@@ -9,4 +9,13 @@
     <string name="choose_border_and_size">Velg ramme og størrelse</string>
     <string name="chose_border_size">Velg rammebredde</string>
     <string name="image_preview_screen">Detaljer</string>
+    <string name="no_photo_chosen">Ingen bilde valgt</string>
+    <string name="add_to_cart">Legg i handlekurv</string>
+    <string name="home">Hjem</string>
+    <string name="wood">Tre</string>
+    <string name="metal">Metall</string>
+    <string name="plastic">Plast</string>
+    <string name="small">Liten</string>
+    <string name="medium">Medium</string>
+    <string name="large">Stor</string>
 </resources>

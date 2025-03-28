@@ -18,18 +18,19 @@ import com.example.oblig_3.ui.data.Category
 import com.example.oblig_3.ui.data.DataSource
 
 @Composable
-fun <T> FilterScreen(modifier: Modifier = Modifier, filterContent: List<T> = listOf()) {
+fun <T> FilterScreen(modifier: Modifier = Modifier, onNextButtonClicked: (T)->Unit, filterContent: List<T> = listOf()) {
     Column(modifier = modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         filterContent.map { filter ->
-                CategoryButton(filter= filter)
+                CategoryButton(filter= filter, onNextButtonClicked = onNextButtonClicked)
         }
 
     }
 }
 
 @Composable
-fun <T> CategoryButton(modifier: Modifier = Modifier, filter: T){
-    Button(modifier = modifier.fillMaxWidth(), onClick = {Log.i("FILTERSCREEN", "onclick")}){
+fun <T> CategoryButton(modifier: Modifier = Modifier, filter: T, onNextButtonClicked: (T) -> Unit){
+    Button(modifier = modifier.fillMaxWidth(), onClick = {
+        onNextButtonClicked(filter) }){
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start){
             when (filter) {
                 is Artist -> {
@@ -52,5 +53,5 @@ fun <T> CategoryButton(modifier: Modifier = Modifier, filter: T){
 @Preview(showBackground = true)
 @Composable
 fun FilterPreview() {
-    FilterScreen(filterContent = DataSource.artists)
+    FilterScreen(filterContent = DataSource.artists, onNextButtonClicked = {})
 }
