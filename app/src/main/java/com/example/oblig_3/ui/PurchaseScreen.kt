@@ -6,15 +6,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight.Companion.W700
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.oblig_3.R
 import com.example.oblig_3.ui.data.DataSource
 import com.example.oblig_3.ui.data.PurchaseItem
@@ -27,9 +26,9 @@ fun PurchaseScreen(purchaseItemList: List<PurchaseItem>) {
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(8.dp)) {
-        Text(text = stringResource(R.string.total_price), fontSize = 16.sp, fontWeight = W700)
-        Text(text = "${calculateTotalPrice(purchaseItemList)}", fontSize = 14.sp)
+        .padding(dimensionResource(R.dimen.padding_small))) {
+        Text(text = stringResource(R.string.total_price), style= MaterialTheme.typography.labelLarge)
+        Text(text = "${calculateTotalPrice(purchaseItemList)}", style=MaterialTheme.typography.labelMedium)
 
         Button(
             modifier = Modifier.fillMaxWidth(),

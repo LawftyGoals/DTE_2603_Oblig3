@@ -1,6 +1,5 @@
 package com.example.oblig_3.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.oblig_3.ui.data.ArtPurchaseUiState
 import com.example.oblig_3.ui.data.Artist
@@ -18,6 +17,13 @@ class ArtVendorViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(ArtPurchaseUiState())
     val uiState: StateFlow<ArtPurchaseUiState> = _uiState.asStateFlow()
 
+    fun updateCurrentPurchaseItem(purchaseItem: PurchaseItem){
+        _uiState.update {
+            currentState ->
+            currentState.copy(currentPurchaseItem = purchaseItem)
+        }
+    }
+
     fun updatePurchaseItemList(purchaseItem: PurchaseItem) {
         _uiState.update {
             currentState ->
@@ -34,7 +40,6 @@ class ArtVendorViewModel: ViewModel() {
             currentState.copy(purchaseItemList = purchaseItemList)
 
         }
-        Log.i("PURCHASEITEMLIST", uiState.value.purchaseItemList.count().toString())
     }
 
     fun updateChosenFilter(filter: Filters){

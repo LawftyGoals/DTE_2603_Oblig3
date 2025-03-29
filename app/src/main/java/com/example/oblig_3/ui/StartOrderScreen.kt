@@ -1,10 +1,12 @@
 package com.example.oblig_3.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
@@ -15,14 +17,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.oblig_3.R
 import com.example.oblig_3.ui.data.DataSource
 import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.data.PurchaseItem
 import com.example.oblig_3.ui.theme.Oblig_3Theme
+import java.util.Locale
 
 
 @Composable
@@ -36,24 +39,24 @@ fun StartOrderScreen(
 
     val totalCost = calculateTotalPrice(purchaseItemList)
 
-    Column(modifier = modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text(stringResource(R.string.placeholder))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Button(onClick = { onNextButtonClicked(Filters.ARTIST) }) {
-                Text(stringResource(R.string.placeholder))
+    Column(modifier = modifier.padding(dimensionResource( R.dimen.padding_small)), verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))) {
+        Text(stringResource(R.string.choose_image_based_on))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))) {
+            Button(modifier = Modifier.weight(1f), onClick = { onNextButtonClicked(Filters.ARTIST) }) {
+                Text(stringResource(R.string.artist))
             }
-            Button(onClick = { onNextButtonClicked(Filters.CATEGORY) }) {
-                Text(stringResource(R.string.placeholder))
+            Button(modifier = Modifier.weight(1f), onClick = { onNextButtonClicked(Filters.CATEGORY) }) {
+                Text(stringResource(R.string.category))
             }
         }
 
-        Text(stringResource(R.string.placeholder) + "${purchaseItemList.count()}")
+        Text("${stringResource(R.string.number_of_images_chosen)} ${purchaseItemList.count()}")
 
-        Text(stringResource(R.string.placeholder) + "$totalCost")
+        Text("${stringResource(R.string.total_price)} ${String.format(Locale.getDefault(),"%.2f", totalCost)}")
 
         if (purchaseItemList.count() > 0) {
 
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)), verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))) {
                 purchaseItemList.map { purchaseItem ->
                     PurchaseItemCard(
                         purchaseItem = purchaseItem,
@@ -76,7 +79,7 @@ fun PurchaseItemCard(
     onDeleteClicked: (Long) -> Unit
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))).padding(dimensionResource(R.dimen.padding_small)),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -94,7 +97,7 @@ fun PurchaseItemCard(
             Text(text = purchaseItem.size.size.toString())
         }
         IconButton(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(0.6f).background(MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_medium))),
             onClick = { onDeleteClicked(purchaseItem.photo.id) }) {
             Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete purchase item")
         }

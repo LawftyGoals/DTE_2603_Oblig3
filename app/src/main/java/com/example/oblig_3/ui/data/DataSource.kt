@@ -58,8 +58,7 @@ data class Artist(
 enum class Category {
     NATURE(),
     FOOD(),
-    SPORT(),
-    TEST()
+    SPORT()
 }
 
 enum class Filters {
@@ -87,7 +86,7 @@ enum class FrameSize(val extraPrice: Float, val size: Int = 10){
 }
 
 val testArtist = Artist(-1L)
-val testPhoto = Photo(id= -1L,imageResId=R.drawable.ic_launcher_background, artist=testArtist, category=Category.TEST)
+val testPhoto = Photo(id= -1L,imageResId=R.drawable.ic_launcher_background, artist=testArtist, category=Category.NATURE)
 
 class PurchaseItem(var photo: Photo = testPhoto, var size: PhotoSize = PhotoSize.SMALL, val frameType: FrameType = FrameType.WOOD, val frameSize: FrameSize = FrameSize.SMALL){
     fun getCost(): Float {

@@ -14,10 +14,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.oblig_3.ui.ArtVendorViewModel
 
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -57,6 +60,9 @@ fun ArtVendorAppBar(
 ) {
     TopAppBar(
         modifier = modifier,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
         title = { Text(stringResource(currentScreen.title)) },
         navigationIcon = {
             if (canNavigateBack) {
@@ -133,12 +139,15 @@ fun ArtVendorApp(
                 }
                 ImageScreen(photos = photos, onNextButtonClick = { photo ->
                     navController.navigate(ArtVendorScreen.ImagePreview.name)
+                    viewModel.updateCurrentPurchaseItem(PurchaseItem(photo))
                     viewModel.setTargetPhoto(photo)
                 })
             }
             composable(route = ArtVendorScreen.ImagePreview.name) {
                 ImagePreviewScreen(
                     photo = uiState.targetPhoto,
+                    currentPurchaseItem = uiState.currentPurchaseItem!!,
+                    updateCurrentPurchaseItem = { purchaseItem -> viewModel.updateCurrentPurchaseItem(purchaseItem) },
                     onNextButtonClicked = { purchaseItem: PurchaseItem? ->
                         if (purchaseItem != null) {
                             viewModel.updatePurchaseItemList(purchaseItem)
@@ -146,7 +155,6 @@ fun ArtVendorApp(
                         navController.navigate(ArtVendorScreen.Start.name)
                     })
             }
-
             composable(route = ArtVendorScreen.Purchase.name) {
                 PurchaseScreen(purchaseItemList = uiState.purchaseItemList)
             }
@@ -154,4 +162,10 @@ fun ArtVendorApp(
 
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewAppBar(){
+    ArtVendorAppBar(Modifier, ArtVendorScreen.Start, false) { }
 }

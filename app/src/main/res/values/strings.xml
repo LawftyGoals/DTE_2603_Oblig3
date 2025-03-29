@@ -22,4 +22,9 @@
     <string name="total_price">Totalpris:</string>
     <string name="pay">Betal</string>
     <string name="unimplemented">IKKE IMPLEMENTERT</string>
+    <string name="choose_image_based_on">Velg bilde basert på</string>
+    <string name="artist">Kunstner</string>
+    <string name="category">Kategori</string>
+    <string name="number_of_images_chosen">Antall bilder valgt:</string>
+    <string name="unrecognized_filter_type">Unrecognized Filter Type</string>
 </resources>
