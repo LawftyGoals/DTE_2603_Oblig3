@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import com.example.oblig_3.R
 import com.example.oblig_3.ui.data.DataSource
 import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.data.PurchaseItem
+import com.example.oblig_3.ui.theme.Oblig_3Theme
 
 
 @Composable
@@ -34,7 +36,7 @@ fun StartOrderScreen(
 
     val totalCost = calculateTotalPrice(purchaseItemList)
 
-    Column(modifier = modifier.padding(8.dp), verticalArrangement = Arrangement.SpaceBetween) {
+    Column(modifier = modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(stringResource(R.string.placeholder))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Button(onClick = { onNextButtonClicked(Filters.ARTIST) }) {
@@ -79,7 +81,8 @@ fun PurchaseItemCard(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = purchaseItem.photo.artist.name.toString())
+            Text(style = MaterialTheme.typography.displayMedium,
+                text = purchaseItem.photo.artist.name.toString())
             Text(text = purchaseItem.photo.artist.familyName.toString())
         }
         Column(modifier = Modifier.weight(1f)) {
@@ -102,11 +105,14 @@ fun PurchaseItemCard(
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-    StartOrderScreen(
-        onDeleteClicked = TODO(),
-        purchaseItemList = listOf(
-            PurchaseItem(DataSource.photos[0]),
-            PurchaseItem(DataSource.photos[9])
+    Oblig_3Theme{
+        StartOrderScreen(
+            onDeleteClicked = {},
+            purchaseItemList = listOf(
+                PurchaseItem(DataSource.photos[0]),
+                PurchaseItem(DataSource.photos[9])
+            )
         )
-    )
+
+    }
 }
