@@ -27,17 +27,17 @@ class ArtVendorViewModel: ViewModel() {
     fun updatePurchaseItemList(purchaseItem: PurchaseItem) {
         _uiState.update {
             currentState ->
-            val purchaseItemList = currentState.purchaseItemList.toMutableList()
+            val purchaseItemList = currentState.purchaseItemCart.toMutableList()
             purchaseItemList.add(purchaseItem)
-            currentState.copy(purchaseItemList = purchaseItemList)
+            currentState.copy(purchaseItemCart = purchaseItemList)
         }
     }
 
     fun deleteFromPurchaseItem(purchaseItemId: Long){
         _uiState.update{
                 currentState ->
-            val purchaseItemList = currentState.purchaseItemList.filter { purchaseItem -> purchaseItem.photo.id != purchaseItemId }
-            currentState.copy(purchaseItemList = purchaseItemList)
+            val purchaseItemList = currentState.purchaseItemCart.filter { purchaseItem -> purchaseItem.photo.id != purchaseItemId }
+            currentState.copy(purchaseItemCart = purchaseItemList)
 
         }
     }

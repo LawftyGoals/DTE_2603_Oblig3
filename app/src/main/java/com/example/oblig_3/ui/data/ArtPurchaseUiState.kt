@@ -7,7 +7,7 @@ data class ArtPurchaseUiState (
     val chosenArtist: Artist? = null,
     val chosenCategory: Category? = null,
     val targetPhoto: Photo = testPhoto,
-    val purchaseItemList: List<PurchaseItem> = listOf(),
+    val purchaseItemCart: List<PurchaseItem> = listOf(),
     val currentPurchaseItem: PurchaseItem? = null
 
 )

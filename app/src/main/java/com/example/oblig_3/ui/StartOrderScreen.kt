@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +41,7 @@ fun StartOrderScreen(
     val totalCost = calculateTotalPrice(purchaseItemList)
 
     Column(modifier = modifier.padding(dimensionResource( R.dimen.padding_small)), verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))) {
-        Text(stringResource(R.string.choose_image_based_on))
+        Text(stringResource(R.string.choose_image_based_on), style=MaterialTheme.typography.labelLarge)
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))) {
             Button(modifier = Modifier.weight(1f), onClick = { onNextButtonClicked(Filters.ARTIST) }) {
                 Text(stringResource(R.string.artist))
@@ -50,9 +51,9 @@ fun StartOrderScreen(
             }
         }
 
-        Text("${stringResource(R.string.number_of_images_chosen)} ${purchaseItemList.count()}")
+        Text("${stringResource(R.string.number_of_images_chosen)} ${purchaseItemList.count()}", style=MaterialTheme.typography.labelLarge)
 
-        Text("${stringResource(R.string.total_price)} ${String.format(Locale.getDefault(),"%.2f", totalCost)}")
+        Text("${stringResource(R.string.total_price)} ${String.format(Locale.getDefault(),"%.2f", totalCost)}", style=MaterialTheme.typography.labelLarge)
 
         if (purchaseItemList.count() > 0) {
 
@@ -79,7 +80,13 @@ fun PurchaseItemCard(
     onDeleteClicked: (Long) -> Unit
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().background(MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))).padding(dimensionResource(R.dimen.padding_small)),
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                MaterialTheme.colorScheme.secondaryContainer,
+                shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))
+            )
+            .padding(dimensionResource(R.dimen.padding_small)),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -97,7 +104,13 @@ fun PurchaseItemCard(
             Text(text = purchaseItem.size.size.toString())
         }
         IconButton(
-            modifier = Modifier.weight(0.6f).background(MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_medium))),
+            modifier = Modifier
+                .testTag(stringResource(R.string.delete))
+                .weight(0.6f)
+                .background(
+                    MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_medium))
+                ),
             onClick = { onDeleteClicked(purchaseItem.photo.id) }) {
             Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete purchase item")
         }

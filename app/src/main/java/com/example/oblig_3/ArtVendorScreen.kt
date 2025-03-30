@@ -108,7 +108,7 @@ fun ArtVendorApp(
         ) {
             composable(route = ArtVendorScreen.Start.name) {
                 StartOrderScreen(
-                    purchaseItemList = uiState.purchaseItemList,
+                    purchaseItemList = uiState.purchaseItemCart,
                     onNextButtonClicked = { filter ->
                         navController.navigate(ArtVendorScreen.Filter.name)
                         viewModel.updateChosenFilter(filter)
@@ -156,7 +156,7 @@ fun ArtVendorApp(
                     })
             }
             composable(route = ArtVendorScreen.Purchase.name) {
-                PurchaseScreen(purchaseItemList = uiState.purchaseItemList)
+                PurchaseScreen(purchaseItemList = uiState.purchaseItemCart)
             }
 
 

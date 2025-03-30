@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -20,9 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.oblig_3.R
@@ -48,11 +51,23 @@ fun ImagePreviewScreen(
     } else {
         val image = painterResource(photo.imageResId)
 
-        Column(modifier.fillMaxSize().padding(dimensionResource(R.dimen.padding_small)), horizontalAlignment = Alignment.CenterHorizontally) {
-            Column(modifier.fillMaxWidth().background(MaterialTheme.colorScheme.tertiaryContainer,
-                RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))
-            ).padding(dimensionResource(R.dimen.padding_small)), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text=photo.category.name)
+        Column(
+            modifier
+                .fillMaxSize()
+                .padding(dimensionResource(R.dimen.padding_small)),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Column(
+                modifier
+                    .fillMaxWidth()
+                    .background(
+                        MaterialTheme.colorScheme.tertiaryContainer,
+                        RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))
+                    )
+                    .padding(dimensionResource(R.dimen.padding_small)),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = photo.category.name)
                 Box(
                     modifier = Modifier.border(
                         width = currentPurchaseItem.frameSize.size.dp,
@@ -60,8 +75,12 @@ fun ImagePreviewScreen(
                     )
                 ) {
                     Image(
-                        modifier = Modifier.fillMaxWidth().aspectRatio(image.intrinsicSize.width / image.intrinsicSize.height),
-                        painter = image, contentScale = ContentScale.Fit, contentDescription = "${photo.title} ${
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(image.intrinsicSize.width / image.intrinsicSize.height),
+                        painter = image,
+                        contentScale = ContentScale.Fit,
+                        contentDescription = "${photo.title} ${
                             photo
                                 .artist.name
                         } ${photo.artist.familyName}"
@@ -71,7 +90,8 @@ fun ImagePreviewScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_small)), style= MaterialTheme.typography.labelLarge,
+                    .padding(dimensionResource(R.dimen.padding_small)),
+                style = MaterialTheme.typography.labelLarge,
                 text = stringResource(R.string.choose_border_and_size)
             )
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -104,7 +124,8 @@ fun ImagePreviewScreen(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_small)), style= MaterialTheme.typography.labelLarge,
+                    .padding(dimensionResource(R.dimen.padding_small)),
+                style = MaterialTheme.typography.labelLarge,
                 text = stringResource(R.string.chose_border_size)
             )
             SelectFrameSize(
@@ -141,12 +162,20 @@ fun SelectFrameType(
     frames: List<FrameType> = DataSource.frames,
     updatePurchaseItem: (FrameType) -> Unit
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))
+    ) {
         frames.map { frame ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(selected = frame == selected, onClick = {
+            Row(
+                modifier = Modifier.testTag(frame.name).selectable(selected = frame == selected, onClick = {
                     updatePurchaseItem(frame)
-                }
+                }, role = Role.RadioButton),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
+            ) {
+                RadioButton(
+                    selected = frame == selected, onClick = null
                 )
                 Text(text = stringResource(frame.title))
 
@@ -162,12 +191,19 @@ fun SelectPhotoSize(
     updatePurchaseItem: (PhotoSize) -> Unit
 ) {
 
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))
+    ) {
         sizes.map { size ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(selected = size == selected, onClick = {
+            Row(
+                modifier = Modifier.selectable(selected = size == selected, onClick = {
                     updatePurchaseItem(size)
-                })
+                }, role = Role.RadioButton),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
+            ) {
+                RadioButton(selected = size == selected, onClick = null)
                 Text(text = stringResource(size.title))
             }
         }
@@ -183,15 +219,24 @@ fun SelectFrameSize(
 ) {
 
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(dimensionResource(R.dimen.padding_medium)),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         sizes.map { frameSize ->
-            RadioButton(selected = frameSize.size == selected.size, onClick = {
-                updatePurchaseItem(frameSize)
-            })
-            Text(text = frameSize.size.toString())
+            Row(
+                modifier = Modifier.selectable(selected = frameSize == selected, onClick = {
+                    updatePurchaseItem(frameSize)
+                }, role = Role.RadioButton),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
+            ) {
+                RadioButton(selected = frameSize.size == selected.size, onClick = null)
+                Text(text = frameSize.size.toString())
+
+            }
         }
     }
 }

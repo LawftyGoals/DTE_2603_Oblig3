@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,26 +48,32 @@ fun ImageScreen(
             Text(stringResource(R.string.no_images_found))
         } else {
             LazyVerticalGrid(modifier = Modifier.weight(1f), columns = GridCells.Fixed(2), horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium)), verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))) {
-                items(photos) { photo ->
-                    val image = painterResource(photo.imageResId)
-                    Column(modifier = Modifier.height(200.dp).background(
-                        MaterialTheme.colorScheme.tertiaryContainer, shape=RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))
-                    ).padding(dimensionResource(R.dimen.padding_small)).clickable { onNextButtonClick(photo) }, verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text=photo.category.name)
-                        Image(
-                            modifier = Modifier.border((FrameSize.SMALL.size).dp,
-                                FrameType.WOOD.color).fillMaxWidth(), contentScale = ContentScale.FillWidth,
-                            painter = image, contentDescription = "${photo.title} ${
-                                photo
-                                    .artist.name
-                            } ${photo.artist.familyName}"
-                        )
-
-                    }
+                items(items = photos) { photo ->
+                    ImageCard(photo, onNextButtonClick)
                 }
             }
         }
     }
+}
+
+@Composable
+fun ImageCard(photo: Photo, onNextButtonClick: (Photo) -> Unit){
+    val image = painterResource(photo.imageResId)
+    Column(modifier = Modifier.testTag("photo-${photo.id}").height(200.dp).background(
+        MaterialTheme.colorScheme.tertiaryContainer, shape=RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))
+    ).padding(dimensionResource(R.dimen.padding_small)).clickable { onNextButtonClick(photo) }, verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text=photo.category.name)
+        Image(
+            modifier = Modifier.border((FrameSize.SMALL.size).dp,
+                FrameType.WOOD.color).fillMaxWidth(), contentScale = ContentScale.FillWidth,
+            painter = image, contentDescription = "${photo.title} ${
+                photo
+                    .artist.name
+            } ${photo.artist.familyName}"
+        )
+
+    }
+
 }
 
 @Preview(showBackground = true)

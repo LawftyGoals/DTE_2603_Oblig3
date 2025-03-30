@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.oblig_3.R
 import com.example.oblig_3.ui.data.DataSource
 import com.example.oblig_3.ui.data.PurchaseItem
+import java.util.Locale
 
 
 @Composable
@@ -28,7 +29,7 @@ fun PurchaseScreen(purchaseItemList: List<PurchaseItem>) {
         .fillMaxSize()
         .padding(dimensionResource(R.dimen.padding_small))) {
         Text(text = stringResource(R.string.total_price), style= MaterialTheme.typography.labelLarge)
-        Text(text = "${calculateTotalPrice(purchaseItemList)}", style=MaterialTheme.typography.labelMedium)
+        Text(text = String.format(Locale.getDefault(), "%.2f", calculateTotalPrice(purchaseItemList)), style=MaterialTheme.typography.labelMedium)
 
         Button(
             modifier = Modifier.fillMaxWidth(),
