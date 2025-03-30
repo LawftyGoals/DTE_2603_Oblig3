@@ -108,13 +108,13 @@ fun ArtVendorApp(
         ) {
             composable(route = ArtVendorScreen.Start.name) {
                 StartOrderScreen(
-                    purchaseItemList = uiState.purchaseItemCart,
+                    purchaseItemCart = uiState.purchaseItemCart,
                     onNextButtonClicked = { filter ->
                         navController.navigate(ArtVendorScreen.Filter.name)
                         viewModel.updateChosenFilter(filter)
                     },
                     onPurchaseClicked = { navController.navigate(ArtVendorScreen.Purchase.name) },
-                    onDeleteClicked = { photoId -> viewModel.deleteFromPurchaseItem(photoId) }
+                    onDeleteClicked = { purchaseItemId -> viewModel.deleteFromPurchaseItemCart(purchaseItemId) }
 
                 )
             }
@@ -139,7 +139,7 @@ fun ArtVendorApp(
                 }
                 ImageScreen(photos = photos, onNextButtonClick = { photo ->
                     navController.navigate(ArtVendorScreen.ImagePreview.name)
-                    viewModel.updateCurrentPurchaseItem(PurchaseItem(photo))
+                    viewModel.updateCurrentPurchaseItem(PurchaseItem(photo = photo))
                     viewModel.setTargetPhoto(photo)
                 })
             }
@@ -150,7 +150,7 @@ fun ArtVendorApp(
                     updateCurrentPurchaseItem = { purchaseItem -> viewModel.updateCurrentPurchaseItem(purchaseItem) },
                     onNextButtonClicked = { purchaseItem: PurchaseItem? ->
                         if (purchaseItem != null) {
-                            viewModel.updatePurchaseItemList(purchaseItem)
+                            viewModel.updatePurchaseItemCart(purchaseItem)
                         }
                         navController.navigate(ArtVendorScreen.Start.name)
                     })

@@ -1,7 +1,7 @@
 package com.example.oblig_3.ui
 
 import androidx.lifecycle.ViewModel
-import com.example.oblig_3.ui.data.ArtPurchaseUiState
+import com.example.oblig_3.ui.data.ArtVendorUiState
 import com.example.oblig_3.ui.data.Artist
 import com.example.oblig_3.ui.data.Category
 import com.example.oblig_3.ui.data.Filters
@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.update
 
 class ArtVendorViewModel: ViewModel() {
 
-    private val _uiState = MutableStateFlow(ArtPurchaseUiState())
-    val uiState: StateFlow<ArtPurchaseUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ArtVendorUiState())
+    val uiState: StateFlow<ArtVendorUiState> = _uiState.asStateFlow()
 
     fun updateCurrentPurchaseItem(purchaseItem: PurchaseItem){
         _uiState.update {
@@ -24,19 +24,20 @@ class ArtVendorViewModel: ViewModel() {
         }
     }
 
-    fun updatePurchaseItemList(purchaseItem: PurchaseItem) {
+    fun updatePurchaseItemCart(purchaseItem: PurchaseItem) {
         _uiState.update {
             currentState ->
             val purchaseItemList = currentState.purchaseItemCart.toMutableList()
+            purchaseItem.id = currentState.purchaseItemIndex
             purchaseItemList.add(purchaseItem)
-            currentState.copy(purchaseItemCart = purchaseItemList)
+            currentState.copy(purchaseItemIndex = currentState.purchaseItemIndex + 1, purchaseItemCart = purchaseItemList)
         }
     }
 
-    fun deleteFromPurchaseItem(purchaseItemId: Long){
+    fun deleteFromPurchaseItemCart(purchaseItemId: Int){
         _uiState.update{
                 currentState ->
-            val purchaseItemList = currentState.purchaseItemCart.filter { purchaseItem -> purchaseItem.photo.id != purchaseItemId }
+            val purchaseItemList = currentState.purchaseItemCart.filter { purchaseItem -> purchaseItem.id != purchaseItemId }
             currentState.copy(purchaseItemCart = purchaseItemList)
 
         }

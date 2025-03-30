@@ -1,7 +1,7 @@
 package com.example.oblig_3.ui.data
 
-data class ArtPurchaseUiState (
-    val price: Float = 0f,
+data class ArtVendorUiState (
+    val purchaseItemIndex: Int = 1,
 
     val chosenFilter: Filters? = null,
     val chosenArtist: Artist? = null,

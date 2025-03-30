@@ -37,9 +37,9 @@ class TotalPriceUnitTest {
     val mediumFrame = FrameSize.MEDIUM // 25f
     val largeFrame = FrameSize.LARGE // 45f
 
-    val purchaseItemOne = PurchaseItem(photoOne, smallPhoto, woodFrame, smallFrame) // 100f + 0f + 0f +0f = 100f
-    val purchaseItemTwo = PurchaseItem(photoTwo, largePhoto, metalFrame, largeFrame) // 150f + 230f + 100f + 45f = 525f
-    val purchaseItemThree = PurchaseItem(photoThree, mediumPhoto, plasticFrame, mediumFrame) // 10f + 130f + 30f + 25f = 195f
+    val purchaseItemOne = PurchaseItem(-1, photoOne, smallPhoto, woodFrame, smallFrame) // 100f + 0f + 0f +0f = 100f
+    val purchaseItemTwo = PurchaseItem(-1, photoTwo, largePhoto, metalFrame, largeFrame) // 150f + 230f + 100f + 45f = 525f
+    val purchaseItemThree = PurchaseItem(-1, photoThree, mediumPhoto, plasticFrame, mediumFrame) // 10f + 130f + 30f + 25f = 195f
     //total = 820
 
 

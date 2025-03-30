@@ -47,5 +47,5 @@ fun PurchaseScreen(purchaseItemList: List<PurchaseItem>) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewPurchaseScreen() {
-    PurchaseScreen(listOf(PurchaseItem(DataSource.photos[0])))
+    PurchaseScreen(listOf(PurchaseItem(photo = DataSource.photos[0])))
 }

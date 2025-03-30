@@ -32,13 +32,13 @@ import java.util.Locale
 @Composable
 fun StartOrderScreen(
     modifier: Modifier = Modifier,
-    purchaseItemList: List<PurchaseItem>,
-    onDeleteClicked: (Long) -> Unit,
+    purchaseItemCart: List<PurchaseItem>,
+    onDeleteClicked: (Int) -> Unit,
     onNextButtonClicked: (Filters) -> Unit = {},
     onPurchaseClicked: () -> Unit = {}
 ) {
 
-    val totalCost = calculateTotalPrice(purchaseItemList)
+    val totalCost = calculateTotalPrice(purchaseItemCart)
 
     Column(modifier = modifier.padding(dimensionResource( R.dimen.padding_small)), verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))) {
         Text(stringResource(R.string.choose_image_based_on), style=MaterialTheme.typography.labelLarge)
@@ -51,14 +51,14 @@ fun StartOrderScreen(
             }
         }
 
-        Text("${stringResource(R.string.number_of_images_chosen)} ${purchaseItemList.count()}", style=MaterialTheme.typography.labelLarge)
+        Text("${stringResource(R.string.number_of_images_chosen)} ${purchaseItemCart.count()}", style=MaterialTheme.typography.labelLarge)
 
         Text("${stringResource(R.string.total_price)} ${String.format(Locale.getDefault(),"%.2f", totalCost)}", style=MaterialTheme.typography.labelLarge)
 
-        if (purchaseItemList.count() > 0) {
+        if (purchaseItemCart.count() > 0) {
 
             Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_small)), verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))) {
-                purchaseItemList.map { purchaseItem ->
+                purchaseItemCart.map { purchaseItem ->
                     PurchaseItemCard(
                         purchaseItem = purchaseItem,
                         onDeleteClicked = onDeleteClicked)
@@ -77,7 +77,7 @@ fun StartOrderScreen(
 fun PurchaseItemCard(
     modifier: Modifier = Modifier,
     purchaseItem: PurchaseItem,
-    onDeleteClicked: (Long) -> Unit
+    onDeleteClicked: (Int) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -101,7 +101,7 @@ fun PurchaseItemCard(
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(text = purchaseItem.frameSize.size.toString())
-            Text(text = purchaseItem.size.size.toString())
+            Text(text = String.format(Locale.getDefault(), "%.2f", purchaseItem.photo.price))
         }
         IconButton(
             modifier = Modifier
@@ -111,7 +111,7 @@ fun PurchaseItemCard(
                     MaterialTheme.colorScheme.primaryContainer,
                     shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_medium))
                 ),
-            onClick = { onDeleteClicked(purchaseItem.photo.id) }) {
+            onClick = { onDeleteClicked(purchaseItem.id) }) {
             Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete purchase item")
         }
     }
@@ -124,9 +124,9 @@ fun Preview() {
     Oblig_3Theme{
         StartOrderScreen(
             onDeleteClicked = {},
-            purchaseItemList = listOf(
-                PurchaseItem(DataSource.photos[0]),
-                PurchaseItem(DataSource.photos[9])
+            purchaseItemCart = listOf(
+                PurchaseItem(photo = DataSource.photos[0]),
+                PurchaseItem(photo = DataSource.photos[9])
             )
         )
 

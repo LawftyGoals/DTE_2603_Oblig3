@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
@@ -57,36 +58,11 @@ fun ImagePreviewScreen(
                 .padding(dimensionResource(R.dimen.padding_small)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier
-                    .fillMaxWidth()
-                    .background(
-                        MaterialTheme.colorScheme.tertiaryContainer,
-                        RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))
-                    )
-                    .padding(dimensionResource(R.dimen.padding_small)),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = photo.category.name)
-                Box(
-                    modifier = Modifier.border(
-                        width = currentPurchaseItem.frameSize.size.dp,
-                        color = currentPurchaseItem.frameType.color
-                    )
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(image.intrinsicSize.width / image.intrinsicSize.height),
-                        painter = image,
-                        contentScale = ContentScale.Fit,
-                        contentDescription = "${photo.title} ${
-                            photo
-                                .artist.name
-                        } ${photo.artist.familyName}"
-                    )
-                }
-            }
+
+            //PHOTO REPRESENTATION
+            ImageContainer(image = image, photo = photo, currentPurchaseItem = currentPurchaseItem)
+
+            //FIRST ROW OF RADIO BUTTONS
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -99,10 +75,10 @@ fun ImagePreviewScreen(
                     updatePurchaseItem = { frameType ->
                         updateCurrentPurchaseItem(
                             PurchaseItem(
-                                photo,
-                                currentPurchaseItem.size,
-                                frameType,
-                                currentPurchaseItem.frameSize
+                                photo = photo,
+                                size = currentPurchaseItem.size,
+                                frameType = frameType,
+                                frameSize = currentPurchaseItem.frameSize
                             )
                         )
                     },
@@ -113,14 +89,16 @@ fun ImagePreviewScreen(
                     updatePurchaseItem = { photoSize ->
                         updateCurrentPurchaseItem(
                             PurchaseItem(
-                                photo,
-                                photoSize,
-                                currentPurchaseItem.frameType,
-                                currentPurchaseItem.frameSize
+                                photo = photo,
+                                size = photoSize,
+                                frameType = currentPurchaseItem.frameType,
+                                frameSize = currentPurchaseItem.frameSize
                             )
                         )
                     })
             }
+
+            //SECOND ROW OF RADIO BUTTONS
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -133,13 +111,15 @@ fun ImagePreviewScreen(
                 updatePurchaseItem = { frameSize ->
                     updateCurrentPurchaseItem(
                         PurchaseItem(
-                            photo,
-                            currentPurchaseItem.size,
-                            currentPurchaseItem.frameType,
-                            frameSize
+                            photo = photo,
+                            size = currentPurchaseItem.size,
+                            frameType = currentPurchaseItem.frameType,
+                            frameSize = frameSize
                         )
                     )
                 })
+
+            //NAVIGATION BUTTONS
             Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))) {
                 Button(onClick = {
                     onNextButtonClicked(currentPurchaseItem)
@@ -168,9 +148,11 @@ fun SelectFrameType(
     ) {
         frames.map { frame ->
             Row(
-                modifier = Modifier.testTag(frame.name).selectable(selected = frame == selected, onClick = {
-                    updatePurchaseItem(frame)
-                }, role = Role.RadioButton),
+                modifier = Modifier
+                    .testTag(frame.name)
+                    .selectable(selected = frame == selected, onClick = {
+                        updatePurchaseItem(frame)
+                    }, role = Role.RadioButton),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
             ) {
@@ -241,6 +223,45 @@ fun SelectFrameSize(
     }
 }
 
+@Composable
+fun ImageContainer(
+    modifier: Modifier = Modifier,
+    image: Painter,
+    photo: Photo,
+    currentPurchaseItem: PurchaseItem
+) {
+    Column(
+        modifier
+            .fillMaxWidth()
+            .background(
+                MaterialTheme.colorScheme.tertiaryContainer,
+                RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))
+            )
+            .padding(dimensionResource(R.dimen.padding_small)),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = photo.category.name)
+        Box(
+            modifier = Modifier.border(
+                width = currentPurchaseItem.frameSize.size.dp,
+                color = currentPurchaseItem.frameType.color
+            )
+        ) {
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(image.intrinsicSize.width / image.intrinsicSize.height),
+                painter = image,
+                contentScale = ContentScale.Fit,
+                contentDescription = "${photo.title} ${
+                    photo
+                        .artist.name
+                } ${photo.artist.familyName}"
+            )
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
@@ -248,7 +269,7 @@ fun ImagePreviewPreview() {
     ImagePreviewScreen(
         photo = DataSource.photos[0],
         modifier = Modifier,
-        currentPurchaseItem = PurchaseItem(DataSource.photos[0]),
+        currentPurchaseItem = PurchaseItem(photo = DataSource.photos[0]),
         onNextButtonClicked = { }
     )
 }
