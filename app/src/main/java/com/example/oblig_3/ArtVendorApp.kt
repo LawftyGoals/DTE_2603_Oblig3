@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.oblig_3.ui.ArtVendorViewModel
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -34,11 +33,12 @@ import com.example.oblig_3.ui.FilterScreen
 import com.example.oblig_3.ui.ImagePreviewScreen
 import com.example.oblig_3.ui.ImageScreen
 import com.example.oblig_3.ui.PurchaseScreen
-import com.example.oblig_3.ui.StartOrderScreen
+import com.example.oblig_3.ui.start.StartOrderScreen
 import com.example.oblig_3.ui.data.DataSource
 import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.data.Photo
 import com.example.oblig_3.ui.data.PurchaseItem
+import com.example.oblig_3.ui.navigation.InventoryNavHost
 
 
 enum class ArtVendorScreen(@StringRes val title: Int) {
@@ -79,9 +79,10 @@ fun ArtVendorAppBar(
 
 @Composable
 fun ArtVendorApp(
-    viewModel: ArtVendorViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
+
+    InventoryNavHost(navController = navController)
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen =
@@ -109,11 +110,11 @@ fun ArtVendorApp(
             composable(route = ArtVendorScreen.Start.name) {
                 StartOrderScreen(
                     purchaseItemCart = uiState.purchaseItemCart,
-                    onNextButtonClicked = { filter ->
+                    navigateToFilter = { filter ->
                         navController.navigate(ArtVendorScreen.Filter.name)
                         viewModel.updateChosenFilter(filter)
                     },
-                    onPurchaseClicked = { navController.navigate(ArtVendorScreen.Purchase.name) },
+                    navigateToPurchase = { navController.navigate(ArtVendorScreen.Purchase.name) },
                     onDeleteClicked = { purchaseItemId -> viewModel.deleteFromPurchaseItemCart(purchaseItemId) }
 
                 )

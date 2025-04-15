@@ -88,10 +88,25 @@ enum class FrameSize(val extraPrice: Float, val size: Int = 10){
 val testArtist = Artist(-1L)
 val testPhoto = Photo(id= -1L,imageResId=R.drawable.ic_launcher_background, artist=testArtist, category=Category.NATURE)
 
-class PurchaseItem(var id: Int = -1, var photo: Photo = testPhoto, var size: PhotoSize = PhotoSize.SMALL, val frameType: FrameType = FrameType.WOOD, val frameSize: FrameSize = FrameSize.SMALL){
+/*class PurchaseItem(var id: Int = -1, var photo: Photo = testPhoto, var size: PhotoSize =
+    PhotoSize.SMALL, val frameType: FrameType = FrameType.WOOD, val frameSize: FrameSize = FrameSize.SMALL){
     fun getCost(): Float {
         val tempPhoto = photo
         return (tempPhoto.price
             + size.extraPrice + frameType.extraPrice + frameSize.extraPrice)
     }
+}*/
+
+class PurchaseItemDto(purchaseItem: PurchaseItem){
+    val id: Int = purchaseItem.id
+    val photo = purchaseItem.photo
+    val photoSize = purchaseItem.photoSize
+    val frameType = purchaseItem.frameType
+    val frameSize = purchaseItem.frameSize
+
+    fun getCost(): Float {
+       return photo.price + photoSize.extraPrice + frameType.extraPrice + frameSize.extraPrice
+    }
+
 }
+

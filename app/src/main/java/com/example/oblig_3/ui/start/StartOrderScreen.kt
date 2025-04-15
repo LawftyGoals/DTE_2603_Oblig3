@@ -1,4 +1,4 @@
-package com.example.oblig_3.ui
+package com.example.oblig_3.ui.start
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,38 +15,48 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.oblig_3.R
-import com.example.oblig_3.ui.data.DataSource
+import com.example.oblig_3.ui.AppViewModelProvider
+import com.example.oblig_3.ui.calculateTotalPrice
 import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.data.PurchaseItem
-import com.example.oblig_3.ui.theme.Oblig_3Theme
+import com.example.oblig_3.ui.navigation.NavigationDestination
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.oblig_3.ui.StartViewModel
 import java.util.Locale
 
+
+object StartDestination: NavigationDestination {
+    override val route = "start"
+    override val titleRes = R.string.app_name
+}
 
 @Composable
 fun StartOrderScreen(
     modifier: Modifier = Modifier,
-    purchaseItemCart: List<PurchaseItem>,
-    onDeleteClicked: (Int) -> Unit,
-    onNextButtonClicked: (Filters) -> Unit = {},
-    onPurchaseClicked: () -> Unit = {}
+    viewModel: StartViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navigateToFilter: (Filters) -> Unit = {},
+    navigateToPurchase: () -> Unit = {}
 ) {
 
+    val uiState by viewModel.uiState.collectAsState()
+    val purchaseItemCart = uiState.purchaseItemCart
     val totalCost = calculateTotalPrice(purchaseItemCart)
 
     Column(modifier = modifier.padding(dimensionResource( R.dimen.padding_small)), verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))) {
         Text(stringResource(R.string.choose_image_based_on), style=MaterialTheme.typography.labelLarge)
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))) {
-            Button(modifier = Modifier.weight(1f), onClick = { onNextButtonClicked(Filters.ARTIST) }) {
+            Button(modifier = Modifier.weight(1f), onClick = { navigateToFilter(Filters.ARTIST) }) {
                 Text(stringResource(R.string.artist))
             }
-            Button(modifier = Modifier.weight(1f), onClick = { onNextButtonClicked(Filters.CATEGORY) }) {
+            Button(modifier = Modifier.weight(1f), onClick = { navigateToFilter(Filters.CATEGORY) }) {
                 Text(stringResource(R.string.category))
             }
         }
@@ -61,12 +71,12 @@ fun StartOrderScreen(
                 purchaseItemCart.map { purchaseItem ->
                     PurchaseItemCard(
                         purchaseItem = purchaseItem,
-                        onDeleteClicked = onDeleteClicked)
+                        onDeleteClicked = { viewModel.deleteFromPurchaseItemCart(purchaseItem.id) })
                 }
             }
         }
 
-        Button(modifier = Modifier.fillMaxWidth(), onClick = onPurchaseClicked) {
+        Button(modifier = Modifier.fillMaxWidth(), onClick = navigateToPurchase) {
             Text(stringResource(R.string.purchase))
         }
     }
@@ -97,7 +107,7 @@ fun PurchaseItemCard(
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(text = stringResource(purchaseItem.frameType.title))
-            Text(text = stringResource(purchaseItem.size.title))
+            Text(text = stringResource(purchaseItem.photoSize.title))
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(text = purchaseItem.frameSize.size.toString())
@@ -117,7 +127,7 @@ fun PurchaseItemCard(
     }
 }
 
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
@@ -131,4 +141,4 @@ fun Preview() {
         )
 
     }
-}
+}*/

@@ -60,4 +60,10 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     androidTestImplementation(libs.androidx.navigation.testing)
 
+
+    implementation(libs.androidx.room.runtime)
+
+
+
+
 }
