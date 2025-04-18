@@ -1,4 +1,4 @@
-package com.example.oblig_3.ui
+package com.example.oblig_3.ui.image
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,7 +27,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.oblig_3.R
 import com.example.oblig_3.ui.data.DataSource
@@ -35,10 +34,15 @@ import com.example.oblig_3.ui.data.FrameSize
 import com.example.oblig_3.ui.data.FrameType
 import com.example.oblig_3.ui.data.Photo
 import com.example.oblig_3.ui.data.PhotoSize
-import com.example.oblig_3.ui.data.PurchaseItem
 import com.example.oblig_3.ui.data.PurchaseItemDto
 import com.example.oblig_3.ui.data.testPhoto
+import com.example.oblig_3.ui.navigation.NavigationDestination
 
+
+object ImagePreviewDestination : NavigationDestination {
+    override val route = "image_preview"
+    override val titleRes = R.string.image_preview_screen
+}
 
 @Composable
 fun ImagePreviewScreen(

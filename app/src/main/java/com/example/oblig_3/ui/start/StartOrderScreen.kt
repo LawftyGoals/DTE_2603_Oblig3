@@ -34,7 +34,7 @@ import com.example.oblig_3.ui.data.PurchaseItem
 import com.example.oblig_3.ui.navigation.NavigationDestination
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oblig_3.ArtVendorAppTopBar
-import com.example.oblig_3.ui.StartViewModel
+import com.example.oblig_3.ui.ArtVendorViewModel
 import com.example.oblig_3.ui.data.PurchaseItemDto
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -48,13 +48,13 @@ object StartDestination : NavigationDestination {
 @Composable
 fun StartOrderScreen(
     modifier: Modifier = Modifier,
-    viewModel: StartViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModel: ArtVendorViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateToFilter: (Filters) -> Unit = {},
     navigateToPurchase: () -> Unit = {}
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
-    val purchaseItemCart = uiState.purchaseItemCart
+    val purchaseItemCart =
     Scaffold(modifier = modifier, topBar = {
         ArtVendorAppTopBar(
             currentScreen = StartDestination,
@@ -62,11 +62,13 @@ fun StartOrderScreen(
         )
     }) { innerPadding ->
         StartOrderBody(
-            modifier.padding(innerPadding), navigateToFilter, { filter ->
-                Log.i("updateFilter", filter.name)
+            modifier = modifier.padding(innerPadding),
+            navigateToFilter = navigateToFilter,
+            updateChosenFilter = { filter ->
                 viewModel.updateChosenFilter(filter)
             },
-            purchaseItemCart, { id -> viewModel.deleteFromPurchaseItemCart(id) },
+            purchaseItemCart = purchaseItemCart,
+            deleteFromPurchaseItemCart = { id -> viewModel.deleteFromPurchaseItemCart(id) },
             navigateToPurchase
         )
     }

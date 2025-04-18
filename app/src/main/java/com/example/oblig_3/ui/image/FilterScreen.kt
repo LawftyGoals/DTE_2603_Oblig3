@@ -21,7 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oblig_3.ArtVendorAppTopBar
 import com.example.oblig_3.R
 import com.example.oblig_3.ui.AppViewModelProvider
-import com.example.oblig_3.ui.StartViewModel
+import com.example.oblig_3.ui.ArtVendorViewModel
 import com.example.oblig_3.ui.data.Artist
 import com.example.oblig_3.ui.data.Category
 import com.example.oblig_3.ui.data.DataSource
@@ -36,10 +36,11 @@ object FilterDestination : NavigationDestination {
 
 @Composable
 fun FilterScreen(modifier: Modifier = Modifier,
-                     viewModel: StartViewModel = viewModel(factory = AppViewModelProvider.Factory), navigateToFilteredImages: ()->Unit,
+                     viewModel: ArtVendorViewModel = viewModel(factory = AppViewModelProvider
+                         .Factory), navigateToFilteredImages: ()->Unit,
                     navigateBack: ()-> Unit = {}) {
     val uiState by viewModel.uiState.collectAsState()
-    Log.i("filter", uiState.chosenFilter?.name.toString())
+
     val filterContent = if (uiState.chosenFilter == Filters.ARTIST) DataSource.artists else DataSource.categories
 
     Scaffold(topBar = {
@@ -62,7 +63,7 @@ fun FilterScreen(modifier: Modifier = Modifier,
 }
 
 @Composable
-fun <T> CategoryButton(modifier: Modifier = Modifier, viewModel: StartViewModel, filter: T,
+fun <T> CategoryButton(modifier: Modifier = Modifier, viewModel: ArtVendorViewModel, filter: T,
                        navigateToFilteredImages: () ->
 Unit){
     Button(modifier = modifier.fillMaxWidth(), onClick = {

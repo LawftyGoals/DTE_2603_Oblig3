@@ -8,7 +8,8 @@ import com.example.oblig_3.ArtVendorApplication
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
-        initializer { StartViewModel(artVendorApplication().appContainer.purchaseItemsRepository) }
+        initializer { ArtVendorViewModel(artVendorApplication().appContainer
+            .purchaseItemsRepository) }
     }
 }
 

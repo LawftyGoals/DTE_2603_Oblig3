@@ -2,7 +2,6 @@ package com.example.oblig_3.ui.data
 
 data class ArtVendorUiState (
     val purchaseItemIndex: Int = 1,
-
     val chosenFilter: Filters? = null,
     val chosenArtist: Artist? = null,
     val chosenCategory: Category? = null,
