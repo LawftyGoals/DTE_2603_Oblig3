@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity (tableName = "shopping_cart")
 data class PurchaseItem(
     @PrimaryKey val id: Int,
-    val photo: Photo,
+    @ColumnInfo(name="photo_Id")val photoId: Int,
     @ColumnInfo(name = "photo_size") val photoSize: PhotoSize,
     @ColumnInfo(name = "frame_size") val frameType: FrameType,
     @ColumnInfo(name = "frame_type") val frameSize: FrameSize

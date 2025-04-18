@@ -7,13 +7,12 @@ import com.example.oblig_3.ui.data.Category
 import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.data.Photo
 import com.example.oblig_3.ui.data.PurchaseItemDto
-import com.example.oblig_3.ui.data.PurchaseItemRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class StartViewModel(purchaseItemRepository: PurchaseItemRepository): ViewModel() {
+class FilterViewModel: ViewModel() {
 
     private val _uiState = MutableStateFlow(ArtVendorUiState())
     val uiState: StateFlow<ArtVendorUiState> = _uiState.asStateFlow()

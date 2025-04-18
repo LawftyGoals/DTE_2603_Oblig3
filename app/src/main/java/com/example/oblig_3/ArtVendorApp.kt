@@ -1,44 +1,24 @@
 package com.example.oblig_3
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 
-import androidx.lifecycle.viewmodel.compose.viewModel
-
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.oblig_3.ui.FilterScreen
-import com.example.oblig_3.ui.ImagePreviewScreen
-import com.example.oblig_3.ui.ImageScreen
-import com.example.oblig_3.ui.PurchaseScreen
-import com.example.oblig_3.ui.start.StartOrderScreen
-import com.example.oblig_3.ui.data.DataSource
-import com.example.oblig_3.ui.data.Filters
-import com.example.oblig_3.ui.data.Photo
-import com.example.oblig_3.ui.data.PurchaseItem
 import com.example.oblig_3.ui.navigation.InventoryNavHost
+import com.example.oblig_3.ui.navigation.NavigationDestination
 
 
 enum class ArtVendorScreen(@StringRes val title: Int) {
@@ -52,18 +32,18 @@ enum class ArtVendorScreen(@StringRes val title: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArtVendorAppBar(
+fun ArtVendorAppTopBar(
     modifier: Modifier = Modifier,
-    currentScreen: ArtVendorScreen,
+    currentScreen: NavigationDestination,
     canNavigateBack: Boolean,
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit = {}
 ) {
     TopAppBar(
         modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        title = { Text(stringResource(currentScreen.title)) },
+        title = { Text(stringResource(currentScreen.titleRes)) },
         navigationIcon = {
             if (canNavigateBack) {
                 IconButton(onClick = navigateUp) {
@@ -84,6 +64,7 @@ fun ArtVendorApp(
 
     InventoryNavHost(navController = navController)
 
+    /*
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen =
         ArtVendorScreen.valueOf(backStackEntry?.destination?.route ?: ArtVendorScreen.Start.name)
@@ -107,18 +88,7 @@ fun ArtVendorApp(
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
         ) {
-            composable(route = ArtVendorScreen.Start.name) {
-                StartOrderScreen(
-                    purchaseItemCart = uiState.purchaseItemCart,
-                    navigateToFilter = { filter ->
-                        navController.navigate(ArtVendorScreen.Filter.name)
-                        viewModel.updateChosenFilter(filter)
-                    },
-                    navigateToPurchase = { navController.navigate(ArtVendorScreen.Purchase.name) },
-                    onDeleteClicked = { purchaseItemId -> viewModel.deleteFromPurchaseItemCart(purchaseItemId) }
 
-                )
-            }
             composable(route = ArtVendorScreen.Filter.name) {
                 FilterScreen(
                     filterContent = if (uiState.chosenFilter == Filters.ARTIST) DataSource.artists else DataSource.categories,
@@ -162,11 +132,12 @@ fun ArtVendorApp(
 
 
         }
-    }
+    }*/
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun PreviewAppBar(){
-    ArtVendorAppBar(Modifier, ArtVendorScreen.Start, false) { }
-}
+    ArtVendorAppTopBar(Modifier, ArtVendorScreen.Start, false) { }
+}*/

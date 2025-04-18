@@ -36,6 +36,7 @@ import com.example.oblig_3.ui.data.FrameType
 import com.example.oblig_3.ui.data.Photo
 import com.example.oblig_3.ui.data.PhotoSize
 import com.example.oblig_3.ui.data.PurchaseItem
+import com.example.oblig_3.ui.data.PurchaseItemDto
 import com.example.oblig_3.ui.data.testPhoto
 
 
@@ -43,9 +44,9 @@ import com.example.oblig_3.ui.data.testPhoto
 fun ImagePreviewScreen(
     modifier: Modifier = Modifier,
     photo: Photo = testPhoto,
-    currentPurchaseItem: PurchaseItem,
-    updateCurrentPurchaseItem: (PurchaseItem) -> Unit = {},
-    onNextButtonClicked: (PurchaseItem?) -> Unit
+    currentPurchaseItem: PurchaseItemDto,
+    updateCurrentPurchaseItem: (PurchaseItemDto) -> Unit = {},
+    onNextButtonClicked: (PurchaseItemDto?) -> Unit
 ) {
     if (photo.id == -1L) {
         Text(stringResource(R.string.no_photo_chosen))
@@ -74,23 +75,25 @@ fun ImagePreviewScreen(
                 SelectFrameType(
                     updatePurchaseItem = { frameType ->
                         updateCurrentPurchaseItem(
-                            PurchaseItem(
+                            PurchaseItemDto(
+                                id = 1,
                                 photo = photo,
-                                size = currentPurchaseItem.size,
+                                photoSize = currentPurchaseItem.photoSize,
                                 frameType = frameType,
-                                frameSize = currentPurchaseItem.frameSize
-                            )
+                                frameSize = currentPurchaseItem.frameSize)
+
                         )
                     },
                     selected = currentPurchaseItem.frameType
                 )
                 SelectPhotoSize(
-                    selected = currentPurchaseItem.size,
+                    selected = currentPurchaseItem.photoSize,
                     updatePurchaseItem = { photoSize ->
                         updateCurrentPurchaseItem(
-                            PurchaseItem(
+                            PurchaseItemDto(
+                                id = 1,
                                 photo = photo,
-                                size = photoSize,
+                                photoSize = photoSize,
                                 frameType = currentPurchaseItem.frameType,
                                 frameSize = currentPurchaseItem.frameSize
                             )
@@ -110,9 +113,10 @@ fun ImagePreviewScreen(
                 selected = currentPurchaseItem.frameSize,
                 updatePurchaseItem = { frameSize ->
                     updateCurrentPurchaseItem(
-                        PurchaseItem(
+                        PurchaseItemDto(
+                            id= 1,
                             photo = photo,
-                            size = currentPurchaseItem.size,
+                            photoSize = currentPurchaseItem.photoSize,
                             frameType = currentPurchaseItem.frameType,
                             frameSize = frameSize
                         )
@@ -228,7 +232,7 @@ fun ImageContainer(
     modifier: Modifier = Modifier,
     image: Painter,
     photo: Photo,
-    currentPurchaseItem: PurchaseItem
+    currentPurchaseItem: PurchaseItemDto
 ) {
     Column(
         modifier
@@ -262,14 +266,14 @@ fun ImageContainer(
     }
 }
 
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun ImagePreviewPreview() {
     ImagePreviewScreen(
         photo = DataSource.photos[0],
         modifier = Modifier,
-        currentPurchaseItem = PurchaseItem(photo = DataSource.photos[0]),
+        currentPurchaseItem = PurchaseItemDto(photo = DataSource.photos[0]),
         onNextButtonClicked = { }
     )
-}
+}*/

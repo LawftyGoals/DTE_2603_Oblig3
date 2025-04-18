@@ -17,11 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.oblig_3.R
 import com.example.oblig_3.ui.data.DataSource
 import com.example.oblig_3.ui.data.PurchaseItem
+import com.example.oblig_3.ui.data.PurchaseItemDto
 import java.util.Locale
 
 
 @Composable
-fun PurchaseScreen(purchaseItemList: List<PurchaseItem>) {
+fun PurchaseScreen(purchaseItemList: List<PurchaseItemDto>) {
     val ctx = LocalContext.current
     val toast = Toast.makeText(ctx, R.string.unimplemented, Toast.LENGTH_SHORT)
 
@@ -43,9 +44,9 @@ fun PurchaseScreen(purchaseItemList: List<PurchaseItem>) {
 
 }
 
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun PreviewPurchaseScreen() {
     PurchaseScreen(listOf(PurchaseItem(photo = DataSource.photos[0])))
-}
+}*/
