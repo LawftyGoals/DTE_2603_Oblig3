@@ -69,7 +69,7 @@ fun InventoryNavHost(
                 updateCurrentPurchaseItem = { purchaseItem -> viewModel.updateCurrentPurchaseItem(purchaseItem) },
                 onNextButtonClicked = { purchaseItem: PurchaseItemDto? ->
                     if (purchaseItem != null) {
-                        viewModel.updatePurchaseItemCart(purchaseItem)
+                        viewModel.addToShoppingCart(purchaseItem)
                     }
                     navController.navigate(ArtVendorScreen.Start.name)
                 })

@@ -97,12 +97,15 @@ val testPhoto = Photo(id= -1L,imageResId=R.drawable.ic_launcher_background, arti
     }
 }*/
 
-class PurchaseItemDto(var id: Int?, val photo: Photo = testPhoto, val photoSize: PhotoSize =
+class PurchaseItemDto(
+    var id: Int?, val photo: Photo = testPhoto, val photoSize: PhotoSize =
     PhotoSize.SMALL, val frameType: FrameType = FrameType.WOOD, val frameSize: FrameSize =
         FrameSize.SMALL){
 
     fun getCost(): Float {
-       return photo.price + photoSize.extraPrice + frameType.extraPrice + frameSize.extraPrice
+
+       return photo.price + photoSize.extraPrice + frameType.extraPrice + frameSize
+           .extraPrice
     }
 
 }

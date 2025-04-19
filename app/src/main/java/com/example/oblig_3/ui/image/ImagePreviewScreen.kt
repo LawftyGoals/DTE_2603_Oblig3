@@ -118,7 +118,7 @@ fun ImagePreviewScreen(
                 updatePurchaseItem = { frameSize ->
                     updateCurrentPurchaseItem(
                         PurchaseItemDto(
-                            id= 1,
+                            id = 1,
                             photo = photo,
                             photoSize = currentPurchaseItem.photoSize,
                             frameType = currentPurchaseItem.frameType,

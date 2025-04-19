@@ -1,6 +1,5 @@
 package com.example.oblig_3.ui.start
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,10 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -30,13 +27,13 @@ import com.example.oblig_3.R
 import com.example.oblig_3.ui.AppViewModelProvider
 import com.example.oblig_3.ui.calculateTotalPrice
 import com.example.oblig_3.ui.data.Filters
-import com.example.oblig_3.ui.data.PurchaseItem
 import com.example.oblig_3.ui.navigation.NavigationDestination
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oblig_3.ArtVendorAppTopBar
 import com.example.oblig_3.ui.ArtVendorViewModel
+import com.example.oblig_3.ui.data.DataSource.photos
 import com.example.oblig_3.ui.data.PurchaseItemDto
-import kotlinx.coroutines.launch
+import com.example.oblig_3.ui.data.testPhoto
 import java.util.Locale
 
 
@@ -53,8 +50,7 @@ fun StartOrderScreen(
     navigateToPurchase: () -> Unit = {}
 ) {
 
-    val uiState by viewModel.uiState.collectAsState()
-    val purchaseItemCart =
+    val shoppingCartState by viewModel.shoppingCartState.collectAsState()
     Scaffold(modifier = modifier, topBar = {
         ArtVendorAppTopBar(
             currentScreen = StartDestination,
@@ -67,8 +63,14 @@ fun StartOrderScreen(
             updateChosenFilter = { filter ->
                 viewModel.updateChosenFilter(filter)
             },
-            purchaseItemCart = purchaseItemCart,
-            deleteFromPurchaseItemCart = { id -> viewModel.deleteFromPurchaseItemCart(id) },
+            purchaseItemCart = shoppingCartState.purchaseItemList.map{purchaseItem ->
+                val photo = photos.find{ photo -> photo.id ==
+                        purchaseItem.photoId.toLong()} ?: testPhoto
+                val photoSize = purchaseItem.photoSize
+                PurchaseItemDto(id = purchaseItem.id, photo=photo, photoSize=photoSize, frameType
+                = purchaseItem.frameType, frameSize = purchaseItem.frameSize
+                )},
+            deleteFromPurchaseItemCart = { id -> viewModel.removeFromShoppingCart(id) },
             navigateToPurchase
         )
     }
