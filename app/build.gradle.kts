@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
+
+
     id ("kotlin-kapt")
 
 }
@@ -71,6 +74,13 @@ dependencies {
 
 
     implementation(libs.androidx.room.runtime)
+
+    implementation(libs.retrofit)
+
+    implementation(libs.converter.scalars)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.okhttp)
 
 }
 

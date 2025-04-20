@@ -7,11 +7,11 @@ import com.example.oblig_3.R
 
 object DataSource {
     val artists = listOf(
-        Artist(1L, "Jack", "Jackson"),
-        Artist(2L, "Jane", "Janedaughter"),
-        Artist(3L, "Zack", "Zackson"),
-        Artist(4L, "Dame", "Damedaughter"),
-        Artist(5L, "Cleatus", "Cleatusson")
+        Artist(1, "Jack", "Jackson"),
+        Artist(2, "Jane", "Janedaughter"),
+        Artist(3, "Zack", "Zackson"),
+        Artist(4, "Dame", "Damedaughter"),
+        Artist(5, "Cleatus", "Cleatusson")
     )
 
     val photos = listOf(
@@ -50,15 +50,15 @@ data class Photo(
 )
 
 data class Artist(
-    val id: Long,
+    val id: Int,
     val name: String = "",
     val familyName: String = ""
 )
 
-enum class Category {
-    NATURE(),
-    FOOD(),
-    SPORT()
+enum class Category( val id: Int = 0) {
+    NATURE(0),
+    FOOD(1),
+    SPORT(2)
 }
 
 enum class Filters {
@@ -85,7 +85,7 @@ enum class FrameSize(val extraPrice: Float, val size: Int = 10){
 
 }
 
-val testArtist = Artist(-1L)
+val testArtist = Artist(-1)
 val testPhoto = Photo(id= -1L,imageResId=R.drawable.ic_launcher_background, artist=testArtist, category=Category.NATURE)
 
 /*class PurchaseItem(var id: Int = -1, var photo: Photo = testPhoto, var size: PhotoSize =

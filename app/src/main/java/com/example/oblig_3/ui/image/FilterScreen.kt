@@ -1,6 +1,5 @@
 package com.example.oblig_3.ui.image
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,21 +9,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oblig_3.ArtVendorAppTopBar
 import com.example.oblig_3.R
 import com.example.oblig_3.ui.AppViewModelProvider
-import com.example.oblig_3.ui.ArtVendorViewModel
 import com.example.oblig_3.ui.data.Artist
 import com.example.oblig_3.ui.data.Category
-import com.example.oblig_3.ui.data.DataSource
 import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.navigation.NavigationDestination
 
@@ -32,29 +26,48 @@ import com.example.oblig_3.ui.navigation.NavigationDestination
 object FilterDestination : NavigationDestination {
     override val route = "filter"
     override val titleRes = R.string.filter_screen
+    const val FILTER_TYPE_ARG = "filterType"
+    val routeWithArgs = "$route/{$FILTER_TYPE_ARG}"
 }
 
 @Composable
-fun FilterScreen(modifier: Modifier = Modifier,
-                     viewModel: ArtVendorViewModel = viewModel(factory = AppViewModelProvider
-                         .Factory), navigateToFilteredImages: ()->Unit,
-                    navigateBack: ()-> Unit = {}) {
-    val uiState by viewModel.uiState.collectAsState()
+fun FilterScreen(
+    modifier: Modifier = Modifier, viewModel: FilterViewModel = viewModel(
+        factory
+        = AppViewModelProvider.Factory
+    ),
+    navigateToFilteredImages:
+        (String, Int) -> Unit, navigateBack: () -> Unit = {}
+) {
 
-    val filterContent = if (uiState.chosenFilter == Filters.ARTIST) DataSource.artists else DataSource.categories
+    val filterType = viewModel.filterUiState.filterType
+
+    @Suppress("UNCHECKED_CAST")
+    val filterContent: List<Any> = (if (filterType == Filters.ARTIST.name)
+        viewModel
+            .filterUiState
+            .artistList else viewModel.filterUiState.categoryList)
 
     Scaffold(topBar = {
         ArtVendorAppTopBar(
             currentScreen = FilterDestination, canNavigateBack =
-                true, navigateUp = navigateBack)
-    }){ innerPadding ->
-        Column(modifier = modifier.padding(dimensionResource(R.dimen
-            .padding_small)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))) {
+                true, navigateUp = navigateBack
+        )
+    }) { innerPadding ->
+        Column(
+            modifier = modifier.padding(
+                dimensionResource(
+                    R.dimen
+                        .padding_small
+                )
+            ),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
+        ) {
             filterContent.map { filter ->
-                CategoryButton(modifier = Modifier.padding(innerPadding), viewModel =
-                    viewModel, filter= filter,
-                    navigateToFilteredImages = navigateToFilteredImages)
+                CategoryButton(
+                    modifier = Modifier.padding(innerPadding), filter = filter,
+                    navigateToFilteredImages = navigateToFilteredImages
+                )
             }
 
         }
@@ -63,30 +76,43 @@ fun FilterScreen(modifier: Modifier = Modifier,
 }
 
 @Composable
-fun <T> CategoryButton(modifier: Modifier = Modifier, viewModel: ArtVendorViewModel, filter: T,
-                       navigateToFilteredImages: () ->
-Unit){
-    Button(modifier = modifier.fillMaxWidth(), onClick = {
-        navigateToFilteredImages()
-        viewModel.updateChosenArtistOrCategory(filter)
-    }){
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start){
-            when (filter) {
-                is Artist -> {
-                    Text(style=MaterialTheme.typography.labelLarge,text=filter.name)
-                    Text(text=filter.familyName)
-                }
-                is Category -> {
-                    Text(text=filter.name)
-                }
-                else -> {
-                    Text(text= stringResource(R.string.unrecognized_filter_type))
+fun <T> CategoryButton(
+    modifier: Modifier = Modifier, filter: T, navigateToFilteredImages:
+        (String, Int) ->
+    Unit
+) {
+
+
+    when (filter) {
+        is Artist -> {
+            Button(modifier = modifier.fillMaxWidth(), onClick = {
+                navigateToFilteredImages(Filters.ARTIST.name, filter.id)
+            }) {
+                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
+                    Text(style = MaterialTheme.typography.labelLarge, text = filter.name)
+                    Text(text = filter.familyName)
                 }
             }
         }
+
+        is Category -> {
+            Button(modifier = modifier.fillMaxWidth(), onClick = {
+                navigateToFilteredImages(Filters.CATEGORY.name, filter.id)
+            }) {
+                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
+                    Text(text = filter.name)
+                }
+            }
+        }
+
+        else -> {
+            Text(text = stringResource(R.string.unrecognized_filter_type))
+        }
     }
 
+
 }
+
 
 /*
 @Preview(showBackground = true)

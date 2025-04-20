@@ -13,11 +13,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.oblig_3.ui.navigation.InventoryNavHost
+import com.example.oblig_3.ui.navigation.ArtVendorNavHost
 import com.example.oblig_3.ui.navigation.NavigationDestination
 
 
@@ -62,7 +61,7 @@ fun ArtVendorApp(
     navController: NavHostController = rememberNavController()
 ) {
 
-    InventoryNavHost(navController = navController)
+    ArtVendorNavHost(navController = navController)
 
     /*
     val backStackEntry by navController.currentBackStackEntryAsState()

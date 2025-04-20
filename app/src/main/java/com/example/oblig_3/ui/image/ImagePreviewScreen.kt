@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.example.oblig_3.ArtVendorAppTopBar
 import com.example.oblig_3.R
 import com.example.oblig_3.ui.data.DataSource
 import com.example.oblig_3.ui.data.FrameSize
@@ -37,6 +39,7 @@ import com.example.oblig_3.ui.data.PhotoSize
 import com.example.oblig_3.ui.data.PurchaseItemDto
 import com.example.oblig_3.ui.data.testPhoto
 import com.example.oblig_3.ui.navigation.NavigationDestination
+import com.example.oblig_3.ui.start.StartDestination
 
 
 object ImagePreviewDestination : NavigationDestination {
@@ -50,10 +53,18 @@ fun ImagePreviewScreen(
     photo: Photo = testPhoto,
     currentPurchaseItem: PurchaseItemDto,
     updateCurrentPurchaseItem: (PurchaseItemDto) -> Unit = {},
-    onNextButtonClicked: (PurchaseItemDto?) -> Unit
+    navigateToHomeScreen: (PurchaseItemDto?) -> Unit,
+    navigateBack: ()->Unit = {}
 ) {
+
+    Scaffold(topBar={ArtVendorAppTopBar(
+        currentScreen = StartDestination,
+        canNavigateBack = true,
+        navigateUp = navigateBack
+    )}){ innerPadding ->
     if (photo.id == -1L) {
-        Text(stringResource(R.string.no_photo_chosen))
+        Text(modifier = Modifier.padding(innerPadding), text = stringResource(R.string
+            .no_photo_chosen))
     } else {
         val image = painterResource(photo.imageResId)
 
@@ -130,16 +141,17 @@ fun ImagePreviewScreen(
             //NAVIGATION BUTTONS
             Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))) {
                 Button(onClick = {
-                    onNextButtonClicked(currentPurchaseItem)
+                    navigateToHomeScreen(currentPurchaseItem)
                 }) {
                     Text(stringResource(R.string.add_to_cart))
                 }
-                Button(onClick = { onNextButtonClicked(null) }) {
+                Button(onClick = { navigateToHomeScreen(null) }) {
                     Text(stringResource(R.string.home))
                 }
 
             }
         }
+    }
     }
 }
 

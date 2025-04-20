@@ -1,5 +1,6 @@
 package com.example.oblig_3.ui.image
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,7 +31,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oblig_3.ArtVendorAppTopBar
+import com.example.oblig_3.ui.AppViewModelProvider
 import com.example.oblig_3.ui.data.Artist
 import com.example.oblig_3.ui.data.Category
 import com.example.oblig_3.ui.data.DataSource
@@ -43,27 +46,22 @@ import com.example.oblig_3.ui.navigation.NavigationDestination
 object ImagesDestination : NavigationDestination {
     override val route = "images"
     override val titleRes = R.string.images_screen
+    const val FILTER_TYPE_ARG = "filterType"
+    const val ID_ARG = "id"
+    val routeWithArgs = "$route/{$FILTER_TYPE_ARG}/{$ID_ARG}"
 }
 
 
 @Composable
-fun <T> ImagesScreen(
+fun ImagesScreen(
     modifier: Modifier = Modifier,
-    chosenFilter: T,
+    viewModel: ImagesViewModel = viewModel(
+        factory
+        = AppViewModelProvider.Factory
+    ),
     navigateToImagePreview: (Photo) -> Unit = {}, navigateBack: () -> Unit = {}
 ) {
-    var photos = listOf<Photo>()
-    if (chosenFilter is Artist) {
-        photos =
-            DataSource.photos.filter { photo ->
-                photo.artist.name == chosenFilter.name && photo
-                    .artist.familyName == chosenFilter.familyName
-            }
-    }
-    if (chosenFilter is Category) {
-        photos =
-            DataSource.photos.filter { photo -> photo.category == chosenFilter }
-    }
+    var photos = viewModel.imagesUiState.filteredPhotos
     Scaffold(topBar = {
         ArtVendorAppTopBar(
             currentScreen = ImagesDestination, canNavigateBack = true,
