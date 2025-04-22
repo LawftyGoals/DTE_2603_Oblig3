@@ -1,14 +1,18 @@
 package com.example.oblig_3.ui.image
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.example.oblig_3.ui.data.DataSource.photos
+import androidx.lifecycle.viewModelScope
+import com.example.oblig_3.network.ArtApi
+import com.example.oblig_3.network.NetworkState
+import com.example.oblig_3.network.PhotoDto
 import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.data.Photo
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class ImagesViewModel(savedStateHandle: SavedStateHandle): ViewModel() {
 
@@ -18,16 +22,44 @@ class ImagesViewModel(savedStateHandle: SavedStateHandle): ViewModel() {
             .FILTER_TYPE_ARG]
     )
 
-    var imagesUiState by mutableStateOf(ImagesUiState())
+    private var _imagesUiState = MutableStateFlow(ImagesUiState())
+    val imagesUiState: StateFlow<ImagesUiState> = _imagesUiState.asStateFlow()
 
     init {
-        Log.i("imagesfilter", "$id $filterType")
-        imagesUiState = ImagesUiState(photos.filter { photo ->
-            if(filterType == Filters.ARTIST.name)  photo.artist.id == id
-            else photo.category.id == id
-        })
+
+    }
+
+    fun getPhotosByFilter(filterType: String, id: Int){
+        viewModelScope.launch {
+
+            imagesUiState.value.networkState = NetworkState.Loading
+
+            try {
+                var filteredPhotosDto: List<PhotoDto> = if (filterType == Filters.ARTIST.name){
+                ArtApi.retrofitService.getPhotosByArtist(id)
+            } else {
+                ArtApi.retrofitService.getPhotosByCategory(id)
+            }
+
+                _imagesUiState.update {
+                    currentState ->
+                    currentState.copy(networkState = NetworkState.Success("Success"),
+                        filteredPhotos = filteredPhotosDto)
+                }
+
+            }
+
+
+
+
+
+
+
+        }
     }
 
 }
 
-data class ImagesUiState(val filteredPhotos: List<Photo> = listOf())
+data class ImagesUiState(
+    var networkState: NetworkState = NetworkState.Loading, val filteredPhotos:
+        List<PhotoDto> = listOf())

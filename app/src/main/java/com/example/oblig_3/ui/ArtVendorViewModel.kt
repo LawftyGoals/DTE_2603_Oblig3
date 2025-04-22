@@ -102,39 +102,6 @@ class ArtVendorViewModel(private val purchaseItemRepository: PurchaseItemReposit
         }
     }
 
-
-    //ROOM REPOSITORY
-
-    fun addToShoppingCart(purchaseItemDto: PurchaseItemDto) {
-        viewModelScope.launch{
-            purchaseItemRepository.insertPurchaseItem(PurchaseItem( photoId = purchaseItemDto
-                .photo
-                .id.toInt(), photoSize = purchaseItemDto.photoSize, frameSize = purchaseItemDto
-                    .frameSize, frameType = purchaseItemDto.frameType))
-        }
-    }
-
-    fun removeFromShoppingCart(id: Int) {
-        viewModelScope.launch {
-            val purchaseItem = purchaseItemRepository.getPurchaseItemStreamById(id).filterNotNull()
-                .first()
-            purchaseItemRepository.deleteItem(purchaseItem)
-        }
-    }
-
-    val shoppingCartState: StateFlow<ShoppingCartState> = purchaseItemRepository
-        .getAllPurchaseItemsStream().map{ ShoppingCartState(it) }.stateIn( scope =
-            viewModelScope, started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-            initialValue = ShoppingCartState()
-    )
-
-    companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
-    }
-
 }
-
-data class ShoppingCartState(val purchaseItemList: List<PurchaseItem> = listOf())
-
 
 

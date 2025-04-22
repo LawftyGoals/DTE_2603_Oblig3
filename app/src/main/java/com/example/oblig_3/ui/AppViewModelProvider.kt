@@ -19,6 +19,8 @@ object AppViewModelProvider {
 
         initializer { ImagesViewModel( this.createSavedStateHandle() ) }
 
+        initializer { StartViewModel(artVendorApplication().appContainer.purchaseItemsRepository) }
+
     }
 
 }

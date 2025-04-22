@@ -40,7 +40,7 @@ fun ArtVendorNavHost(
         modifier = modifier
     ) {
         composable(route = StartDestination.route) {
-            StartOrderScreen(viewModel = viewModel, navigateToFilter = { filter ->
+            StartOrderScreen(navigateToFilter = { filter ->
                 navController.navigate("${FilterDestination.route}/${filter.name}")
             }, navigateToPurchase = { navController.navigate(ArtVendorScreen.Purchase.name) })
         }
@@ -80,7 +80,7 @@ fun ArtVendorNavHost(
                 },
                 navigateToHomeScreen = { purchaseItem: PurchaseItemDto? ->
                     if (purchaseItem != null) {
-                        viewModel.addToShoppingCart(purchaseItem)
+                        //viewModel.addToShoppingCart(purchaseItem)
                     }
                     navController.navigate(ArtVendorScreen.Start.name)
                 },

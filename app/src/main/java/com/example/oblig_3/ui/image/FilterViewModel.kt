@@ -1,36 +1,119 @@
 package com.example.oblig_3.ui.image
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.setValue
-import com.example.oblig_3.ui.data.Artist
-import com.example.oblig_3.ui.data.Category
-import com.example.oblig_3.ui.data.DataSource.artists
+import androidx.lifecycle.viewModelScope
+import com.example.oblig_3.network.ArtApi
+import com.example.oblig_3.network.ArtistDto
+import com.example.oblig_3.network.CategoryDto
+import com.example.oblig_3.network.NetworkState
 import com.example.oblig_3.ui.data.Filters
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
+
 
 class FilterViewModel(savedStateHandle: SavedStateHandle):ViewModel() {
 
-    var filterUiState by mutableStateOf(FilterUiState())
+    private var _filterUiState = MutableStateFlow(FilterUiState())
+    val filterUiState: StateFlow<FilterUiState> = _filterUiState.asStateFlow()
 
     private val filterType: String = checkNotNull(savedStateHandle[FilterDestination
         .FILTER_TYPE_ARG])
 
     init {
-        filterUiState = if (filterType == Filters.ARTIST.name)
-            FilterUiState(filterType = filterType, artistList = artists)
-        else
-            FilterUiState(filterType = filterType, categoryList = Category.entries
-                .toList())
+        getCategories(filterType)
+    }
+
+    fun getCategories(filterType: String) {
+        viewModelScope.launch{
+            filterUiState.value.networkState = NetworkState.Loading
+
+            try {
+                _filterUiState.update {
+                    currentState ->
+                if (filterType == Filters.ARTIST.name) {
+                    val artistList = ArtApi.retrofitService.getAllArtists()
+
+                    currentState.copy(networkState = NetworkState.Success("Success"), filterType =
+                        filterType,
+                        artistList = artistList)
+                }
+                else {
+                    val categoryList = ArtApi.retrofitService.getAllCategories()
+
+                    currentState.copy(networkState = NetworkState.Success("Success"),
+                        filterType = filterType, categoryList = categoryList
+                    )
+                }
+
+            }
+            } catch (e: IOException) {
+                Log.i("filter IOExcpetion", e.toString())
+                _filterUiState.update { currentState ->
+                    currentState.copy(
+                        networkState = NetworkState.Error(e.localizedMessage)
+                    )
+                }
+            } catch (e: HttpException) {
+                Log.i("filter HttpExcpetion", e.toString())
+                val message = getHttpErrorMessage(e)
+                _filterUiState.update { currentState ->
+                    currentState.copy(
+                        networkState = NetworkState.Error(message)
+                    )
+                }
+            }
+
+
+
+        }
+
     }
 
 
 }
 
 data class FilterUiState(
+    var networkState: NetworkState = NetworkState.Loading,
     val filterType: String = "",
-    val artistList: List<Artist> = listOf(),
-    val categoryList : List<Category> = listOf()
+    val artistList: List<ArtistDto> = emptyList(),
+    val categoryList : List<CategoryDto> = emptyList()
 )
+
+
+
+private fun getHttpErrorMessage(e: HttpException): String {
+    val code = e.code()
+    val msg = e.localizedMessage
+    var message = ""
+    when(code) {
+        401 -> {
+            message = "Manglende eller feil Authorization-header ($code): $msg"
+        }
+        403 -> {
+            message = "Ingen tilgang ($code): $msg"
+        }
+        404 -> {
+            message = "Ressurs ikke funnet ($code): $msg"
+        }
+        409 -> {
+            message = "Konflikt (muligens duplisert nøkkelverdi) ($code): $msg"
+        }
+        501 -> {
+            message = "Serverfeil: Ressursen er ikke implementert ($code): $msg"
+        }
+        502 -> {
+            message = "Serverfeil: Ukjent serverfeil eller nettverksfeil ($code): $msg"
+        }
+        else -> {
+            message = "En annen HTTP-feil oppsto ($code): $msg"
+        }
+    }
+    return message
+}

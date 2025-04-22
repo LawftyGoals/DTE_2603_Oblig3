@@ -31,6 +31,7 @@ import com.example.oblig_3.ui.navigation.NavigationDestination
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oblig_3.ArtVendorAppTopBar
 import com.example.oblig_3.ui.ArtVendorViewModel
+import com.example.oblig_3.ui.StartViewModel
 import com.example.oblig_3.ui.data.DataSource.photos
 import com.example.oblig_3.ui.data.PurchaseItemDto
 import com.example.oblig_3.ui.data.testPhoto
@@ -45,7 +46,7 @@ object StartDestination : NavigationDestination {
 @Composable
 fun StartOrderScreen(
     modifier: Modifier = Modifier,
-    viewModel: ArtVendorViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModel: StartViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateToFilter: (Filters) -> Unit = {},
     navigateToPurchase: () -> Unit = {}
 ) {
@@ -60,9 +61,6 @@ fun StartOrderScreen(
         StartOrderBody(
             modifier = modifier.padding(innerPadding),
             navigateToFilter = navigateToFilter,
-            updateChosenFilter = { filter ->
-                viewModel.updateChosenFilter(filter)
-            },
             purchaseItemCart = shoppingCartState.purchaseItemList.map{purchaseItem ->
                 val photo = photos.find{ photo -> photo.id ==
                         purchaseItem.photoId.toLong()} ?: testPhoto
@@ -79,8 +77,7 @@ fun StartOrderScreen(
 
 @Composable
 fun StartOrderBody(
-    modifier: Modifier = Modifier, navigateToFilter: (Filters) -> Unit,
-    updateChosenFilter: (Filters) -> Unit, purchaseItemCart: List<PurchaseItemDto>,
+    modifier: Modifier = Modifier, navigateToFilter: (Filters) -> Unit, purchaseItemCart: List<PurchaseItemDto>,
     deleteFromPurchaseItemCart: (Int) -> Unit, navigateToPurchase: () -> Unit
 ) {
 
@@ -98,13 +95,11 @@ fun StartOrderBody(
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))
         ) {
             Button(modifier = Modifier.weight(1f), onClick = {
-                updateChosenFilter(Filters.ARTIST)
                 navigateToFilter(Filters.ARTIST)
             }) {
                 Text(stringResource(R.string.artist))
             }
             Button(modifier = Modifier.weight(1f), onClick = {
-                updateChosenFilter(Filters.CATEGORY)
                 navigateToFilter(Filters.CATEGORY)
             }) {
                 Text(stringResource(R.string.category))

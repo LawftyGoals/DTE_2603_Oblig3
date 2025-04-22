@@ -9,6 +9,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -16,6 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oblig_3.ArtVendorAppTopBar
 import com.example.oblig_3.R
+import com.example.oblig_3.network.ArtistDto
+import com.example.oblig_3.network.CategoryDto
 import com.example.oblig_3.ui.AppViewModelProvider
 import com.example.oblig_3.ui.data.Artist
 import com.example.oblig_3.ui.data.Category
@@ -40,13 +44,12 @@ fun FilterScreen(
         (String, Int) -> Unit, navigateBack: () -> Unit = {}
 ) {
 
-    val filterType = viewModel.filterUiState.filterType
+    val filterUiState by viewModel.filterUiState.collectAsState()
+    val filterType = filterUiState.filterType
 
-    @Suppress("UNCHECKED_CAST")
     val filterContent: List<Any> = (if (filterType == Filters.ARTIST.name)
-        viewModel
-            .filterUiState
-            .artistList else viewModel.filterUiState.categoryList)
+        filterUiState
+            .artistList else filterUiState.categoryList)
 
     Scaffold(topBar = {
         ArtVendorAppTopBar(
@@ -55,17 +58,12 @@ fun FilterScreen(
         )
     }) { innerPadding ->
         Column(
-            modifier = modifier.padding(
-                dimensionResource(
-                    R.dimen
-                        .padding_small
-                )
+            modifier = modifier.padding(innerPadding
             ),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
         ) {
             filterContent.map { filter ->
-                CategoryButton(
-                    modifier = Modifier.padding(innerPadding), filter = filter,
+                CategoryButton( filter = filter,
                     navigateToFilteredImages = navigateToFilteredImages
                 )
             }
@@ -81,21 +79,19 @@ fun <T> CategoryButton(
         (String, Int) ->
     Unit
 ) {
-
-
     when (filter) {
-        is Artist -> {
+        is ArtistDto -> {
             Button(modifier = modifier.fillMaxWidth(), onClick = {
                 navigateToFilteredImages(Filters.ARTIST.name, filter.id)
             }) {
                 Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
-                    Text(style = MaterialTheme.typography.labelLarge, text = filter.name)
-                    Text(text = filter.familyName)
+                    Text(style = MaterialTheme.typography.labelLarge, text = filter.firstName)
+                    Text(text = filter.lastName)
                 }
             }
         }
 
-        is Category -> {
+        is CategoryDto -> {
             Button(modifier = modifier.fillMaxWidth(), onClick = {
                 navigateToFilteredImages(Filters.CATEGORY.name, filter.id)
             }) {
