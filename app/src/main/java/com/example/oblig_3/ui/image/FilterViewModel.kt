@@ -4,10 +4,11 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.oblig_3.network.ArtApi
 import com.example.oblig_3.network.ArtistDto
 import com.example.oblig_3.network.CategoryDto
 import com.example.oblig_3.network.NetworkState
+import com.example.oblig_3.network.getHttpErrorMessage
+import com.example.oblig_3.ui.data.ArtRepository
 import com.example.oblig_3.ui.data.Filters
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,7 @@ import retrofit2.HttpException
 import java.io.IOException
 
 
-class FilterViewModel(savedStateHandle: SavedStateHandle):ViewModel() {
+class FilterViewModel(savedStateHandle: SavedStateHandle, private val artRepository: ArtRepository):ViewModel() {
 
     private var _filterUiState = MutableStateFlow(FilterUiState())
     val filterUiState: StateFlow<FilterUiState> = _filterUiState.asStateFlow()
@@ -38,14 +39,14 @@ class FilterViewModel(savedStateHandle: SavedStateHandle):ViewModel() {
                 _filterUiState.update {
                     currentState ->
                 if (filterType == Filters.ARTIST.name) {
-                    val artistList = ArtApi.retrofitService.getAllArtists()
+                    val artistList = artRepository.getAllArtists()
 
                     currentState.copy(networkState = NetworkState.Success("Success"), filterType =
                         filterType,
                         artistList = artistList)
                 }
                 else {
-                    val categoryList = ArtApi.retrofitService.getAllCategories()
+                    val categoryList = artRepository.getAllCategories()
 
                     currentState.copy(networkState = NetworkState.Success("Success"),
                         filterType = filterType, categoryList = categoryList
@@ -68,14 +69,12 @@ class FilterViewModel(savedStateHandle: SavedStateHandle):ViewModel() {
                         networkState = NetworkState.Error(message)
                     )
                 }
+
             }
-
-
 
         }
 
     }
-
 
 }
 
@@ -87,33 +86,3 @@ data class FilterUiState(
 )
 
 
-
-private fun getHttpErrorMessage(e: HttpException): String {
-    val code = e.code()
-    val msg = e.localizedMessage
-    var message = ""
-    when(code) {
-        401 -> {
-            message = "Manglende eller feil Authorization-header ($code): $msg"
-        }
-        403 -> {
-            message = "Ingen tilgang ($code): $msg"
-        }
-        404 -> {
-            message = "Ressurs ikke funnet ($code): $msg"
-        }
-        409 -> {
-            message = "Konflikt (muligens duplisert nøkkelverdi) ($code): $msg"
-        }
-        501 -> {
-            message = "Serverfeil: Ressursen er ikke implementert ($code): $msg"
-        }
-        502 -> {
-            message = "Serverfeil: Ukjent serverfeil eller nettverksfeil ($code): $msg"
-        }
-        else -> {
-            message = "En annen HTTP-feil oppsto ($code): $msg"
-        }
-    }
-    return message
-}

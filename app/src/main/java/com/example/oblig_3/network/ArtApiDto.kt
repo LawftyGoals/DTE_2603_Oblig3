@@ -18,10 +18,10 @@ data class CategoryDto(val id: Int, val name: String)
 data class ArtistDto(val id: Int, val firstName: String, val lastName: String)
 
 @Serializable
-data class FrameType(val id: Int, val name: String, val color: String, val extraPrice: Float)
+data class PhotoSizeDto(val id: Int, val name: String, val size: Int, val extraPrice: Float)
 
 @Serializable
-data class FrameSize(val id: Int, val name: String, val size: Int, val extraPrice: Float)
+data class FrameTypeDto(val id: Int, val name: String, val color: String, val extraPrice: Float)
 
 @Serializable
-data class PhotoSize(val id: Int, val name: String, val size: Int, val extraPrice: Float)
+data class FrameSizeDto(val id: Int, val name: String, val size: Int, val extraPrice: Float)

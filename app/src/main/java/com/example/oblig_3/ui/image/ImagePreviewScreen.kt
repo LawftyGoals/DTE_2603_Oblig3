@@ -45,6 +45,9 @@ import com.example.oblig_3.ui.start.StartDestination
 object ImagePreviewDestination : NavigationDestination {
     override val route = "image_preview"
     override val titleRes = R.string.image_preview_screen
+    const val IMAGE_ID_ARG = "imageId"
+    val routeWithArgs = "${route}/{$IMAGE_ID_ARG}"
+
 }
 
 @Composable

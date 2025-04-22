@@ -22,21 +22,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.oblig_3.ArtVendorAppTopBar
+import com.example.oblig_3.network.PhotoDto
 import com.example.oblig_3.ui.AppViewModelProvider
-import com.example.oblig_3.ui.data.Artist
-import com.example.oblig_3.ui.data.Category
-import com.example.oblig_3.ui.data.DataSource
 import com.example.oblig_3.ui.data.FrameSize
 import com.example.oblig_3.ui.data.FrameType
 import com.example.oblig_3.ui.data.Photo
@@ -59,9 +62,11 @@ fun ImagesScreen(
         factory
         = AppViewModelProvider.Factory
     ),
-    navigateToImagePreview: (Photo) -> Unit = {}, navigateBack: () -> Unit = {}
+    navigateToImagePreview: (Int) -> Unit = {}, navigateBack: () -> Unit = {}
 ) {
-    var photos = viewModel.imagesUiState.filteredPhotos
+    val imageUiState by viewModel.imagesUiState.collectAsState()
+    val photos = imageUiState.filteredPhotos
+
     Scaffold(topBar = {
         ArtVendorAppTopBar(
             currentScreen = ImagesDestination, canNavigateBack = true,
@@ -96,7 +101,41 @@ fun ImagesScreen(
 }
 
 @Composable
-fun ImageCard(photo: Photo, onNextButtonClick: (Photo) -> Unit) {
+fun ImageCard(photo: PhotoForUi, onNextButtonClick: (Int) -> Unit) {
+
+    Column(
+        modifier = Modifier
+            .testTag("photo-${photo.id}")
+            .height(200.dp)
+            .background(
+                MaterialTheme.colorScheme.tertiaryContainer,
+                shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))
+            )
+            .padding(dimensionResource(R.dimen.padding_small))
+            .clickable { onNextButtonClick(photo.id) },
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = photo.category?.name ?: stringResource(R.string.placeholder))
+        AsyncImage(
+            modifier = Modifier
+                .border(
+                    (FrameSize.SMALL.size).dp,
+                    FrameType.WOOD.color
+                )
+                .fillMaxWidth(), contentScale = ContentScale.FillWidth,
+            model = ImageRequest.Builder(context = LocalContext.current).data(photo.imageThumbUrl)
+                .crossfade(true).build(),
+            error = painterResource(R.drawable.ic_launcher_background),
+            placeholder = painterResource(R.drawable.ic_launcher_foreground),
+            contentDescription = "${photo.title} ${
+                photo
+                    .artist?.firstName
+            } ${photo.artist?.lastName}"
+        )
+
+    }
+    /*
     val image = painterResource(photo.imageResId)
     Column(
         modifier = Modifier
@@ -125,7 +164,7 @@ fun ImageCard(photo: Photo, onNextButtonClick: (Photo) -> Unit) {
             } ${photo.artist.familyName}"
         )
 
-    }
+    }*/
 
 }
 /*

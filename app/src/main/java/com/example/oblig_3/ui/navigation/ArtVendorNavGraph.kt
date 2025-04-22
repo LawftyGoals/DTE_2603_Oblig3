@@ -17,6 +17,7 @@ import com.example.oblig_3.ui.data.DataSource
 import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.image.ImagePreviewScreen
 import com.example.oblig_3.ui.data.PurchaseItemDto
+import com.example.oblig_3.ui.data.testPhoto
 import com.example.oblig_3.ui.image.FilterDestination
 import com.example.oblig_3.ui.image.FilterScreen
 import com.example.oblig_3.ui.image.ImagePreviewDestination
@@ -59,17 +60,17 @@ fun ArtVendorNavHost(
             ImagesDestination.ID_ARG){type = NavType.IntType}
         )) {
             ImagesScreen(
-                navigateToImagePreview = { photo ->
-                    viewModel.updateCurrentPurchaseItem(PurchaseItemDto(id = 1, photo = photo))
-                    viewModel.setTargetPhoto(photo)
-                    navController.navigate(ImagePreviewDestination.route)
+                navigateToImagePreview = { photoId ->
+
+                    navController.navigate("${ImagePreviewDestination.routeWithArgs}/$photoId")
                 },
                 navigateBack = {
                     navController.popBackStack()
                 })
 
         }
-        composable(route = ImagePreviewDestination.route) {
+        composable(route = ImagePreviewDestination.routeWithArgs, arguments = listOf(navArgument(
+            ImagePreviewDestination.IMAGE_ID_ARG) {type = NavType.IntType})) {
             ImagePreviewScreen(
                 photo = uiState.targetPhoto,
                 currentPurchaseItem = uiState.currentPurchaseItem!!,

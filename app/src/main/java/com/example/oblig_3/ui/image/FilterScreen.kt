@@ -1,6 +1,7 @@
 package com.example.oblig_3.ui.image
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -51,23 +52,27 @@ fun FilterScreen(
         filterUiState
             .artistList else filterUiState.categoryList)
 
-    Scaffold(topBar = {
+    Scaffold(
+        topBar = {
         ArtVendorAppTopBar(
             currentScreen = FilterDestination, canNavigateBack =
                 true, navigateUp = navigateBack
         )
     }) { innerPadding ->
-        Column(
-            modifier = modifier.padding(innerPadding
-            ),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
-        ) {
-            filterContent.map { filter ->
-                CategoryButton( filter = filter,
-                    navigateToFilteredImages = navigateToFilteredImages
-                )
-            }
+        Box(modifier = modifier.padding(innerPadding))
+        {
+            Column(
+                modifier = modifier.padding(dimensionResource(R.dimen.padding_medium)),
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
+            ) {
+                filterContent.map { filter ->
+                    CategoryButton(
+                        filter = filter,
+                        navigateToFilteredImages = navigateToFilteredImages
+                    )
+                }
 
+            }
         }
 
     }

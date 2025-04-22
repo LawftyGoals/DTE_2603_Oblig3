@@ -12,12 +12,26 @@ import com.example.oblig_3.ui.image.ImagesViewModel
 object AppViewModelProvider {
     val Factory = viewModelFactory {
 
-        initializer { ArtVendorViewModel(artVendorApplication().appContainer
-            .purchaseItemsRepository) }
+        initializer {
+            ArtVendorViewModel(
+                artVendorApplication().appContainer
+                    .purchaseItemsRepository
+            )
+        }
 
-        initializer { FilterViewModel( this.createSavedStateHandle() ) }
+        initializer {
+            FilterViewModel(
+                this.createSavedStateHandle(),
+                artVendorApplication().appContainer.artRepository
+            )
+        }
 
-        initializer { ImagesViewModel( this.createSavedStateHandle() ) }
+        initializer {
+            ImagesViewModel(
+                this.createSavedStateHandle(),
+                artVendorApplication().appContainer.artRepository
+            )
+        }
 
         initializer { StartViewModel(artVendorApplication().appContainer.purchaseItemsRepository) }
 
@@ -25,4 +39,5 @@ object AppViewModelProvider {
 
 }
 
-fun CreationExtras.artVendorApplication(): ArtVendorApplication = (this[AndroidViewModelFactory.APPLICATION_KEY] as ArtVendorApplication)
+fun CreationExtras.artVendorApplication(): ArtVendorApplication =
+    (this[AndroidViewModelFactory.APPLICATION_KEY] as ArtVendorApplication)
