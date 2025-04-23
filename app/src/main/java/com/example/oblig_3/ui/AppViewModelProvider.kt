@@ -9,6 +9,7 @@ import com.example.oblig_3.ArtVendorApplication
 import com.example.oblig_3.ui.image.FilterViewModel
 import com.example.oblig_3.ui.image.ImagePreviewViewModel
 import com.example.oblig_3.ui.image.ImagesViewModel
+import com.example.oblig_3.ui.start.StartViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {

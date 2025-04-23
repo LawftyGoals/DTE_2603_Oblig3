@@ -20,14 +20,12 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class ImagesViewModel(
-    savedStateHandle: SavedStateHandle,
-    private val artRepository: ArtRepository
+    savedStateHandle: SavedStateHandle, private val artRepository: ArtRepository
 ) : ViewModel() {
 
     private val id: Int = checkNotNull(savedStateHandle[ImagesDestination.ID_ARG])
     private val filterType: String = checkNotNull(
-        savedStateHandle[FilterDestination
-            .FILTER_TYPE_ARG]
+        savedStateHandle[FilterDestination.FILTER_TYPE_ARG]
     )
 
     private var _imagesUiState = MutableStateFlow(ImagesUiState())
@@ -62,12 +60,12 @@ class ImagesViewModel(
                                 imageDto.title,
                                 imageDto.imageThumbUrl,
                                 imageDto.imageUrl,
-                                artists.find { artist -> artist.id == imageDto.artistId } ?: artists[0],
-                                categories.find { category -> category.id == imageDto.categoryId } ?: categories[0],
-                                imageDto.price
-                            )
-                        }
-                    )
+                                artists.find { artist -> artist.id == imageDto.artistId }
+                                    ?: artists[0],
+                                categories.find { category -> category.id == imageDto.categoryId }
+                                    ?: categories[0],
+                                imageDto.price)
+                        })
                 }
 
             } catch (e: IOException) {
@@ -95,12 +93,13 @@ class ImagesViewModel(
 }
 
 data class ImagesUiState(
-    var networkState: NetworkState = NetworkState.Loading, val filteredImages:
-    List<ImageForUi> = listOf()
+    var networkState: NetworkState = NetworkState.Loading,
+    val filteredImages: List<ImageForUi> = emptyList()
 )
 
 data class ImageForUi(
-    val id: Int, val title: String,
+    val id: Int,
+    val title: String,
     val imageThumbUrl: String,
     val imageUrl: String,
     val artist: ArtistDto,

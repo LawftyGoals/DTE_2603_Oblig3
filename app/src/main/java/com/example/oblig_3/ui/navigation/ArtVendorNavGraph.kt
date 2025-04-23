@@ -7,13 +7,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.oblig_3.ArtVendorScreen
+import com.example.oblig_3.ui.purchase.PurchaseScreen
 import com.example.oblig_3.ui.image.ImagePreviewScreen
 import com.example.oblig_3.ui.image.FilterDestination
 import com.example.oblig_3.ui.image.FilterScreen
 import com.example.oblig_3.ui.image.ImagePreviewDestination
 import com.example.oblig_3.ui.image.ImagesDestination
 import com.example.oblig_3.ui.image.ImagesScreen
+import com.example.oblig_3.ui.purchase.PurchaseDestination
 import com.example.oblig_3.ui.start.StartDestination
 import com.example.oblig_3.ui.start.StartOrderScreen
 
@@ -32,7 +33,10 @@ fun ArtVendorNavHost(
         composable(route = StartDestination.route) {
             StartOrderScreen(navigateToFilter = { filter ->
                 navController.navigate("${FilterDestination.route}/${filter.name}")
-            }, navigateToPurchase = { navController.navigate(ArtVendorScreen.Purchase.name) })
+            }, navigateToPurchase = { navController.navigate(PurchaseDestination.route) })
+        }
+        composable(route = PurchaseDestination.route) {
+            PurchaseScreen(navigateBack = { navController.popBackStack() })
         }
         composable(route = FilterDestination.routeWithArgs, arguments = listOf(navArgument(
             FilterDestination.FILTER_TYPE_ARG){ type = NavType.StringType })) {
@@ -50,8 +54,7 @@ fun ArtVendorNavHost(
         )) {
             ImagesScreen(
                 navigateToImagePreview = { photoId ->
-
-                    navController.navigate("${ImagePreviewDestination.routeWithArgs}/$photoId")
+                    navController.navigate("${ImagePreviewDestination.route}/$photoId")
                 },
                 navigateBack = {
                     navController.popBackStack()

@@ -30,6 +30,7 @@ import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.navigation.NavigationDestination
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oblig_3.ArtVendorAppTopBar
+import com.example.oblig_3.ui.convertValueToStringResource
 import com.example.oblig_3.ui.data.PurchaseItem
 import java.util.Locale
 
@@ -178,17 +179,7 @@ fun PurchaseItemCard(
     }
 }
 
-fun convertValueToStringResource(value: String): Int {
-    when (value) {
-        "Wood" -> return R.string.wood
-        "Metal" -> return R.string.metal
-        "Plastic" -> return R.string.plastic
-        "Small" -> return R.string.small
-        "Medium" -> return R.string.medium
-        "Large" -> return R.string.large
-        else -> return R.string.placeholder
-    }
-}
+
 
 /*
 @Preview(showBackground = true)

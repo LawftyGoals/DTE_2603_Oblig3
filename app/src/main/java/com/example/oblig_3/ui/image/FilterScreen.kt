@@ -36,37 +36,30 @@ object FilterDestination : NavigationDestination {
 @Composable
 fun FilterScreen(
     modifier: Modifier = Modifier, viewModel: FilterViewModel = viewModel(
-        factory
-        = AppViewModelProvider.Factory
-    ),
-    navigateToFilteredImages:
-        (String, Int) -> Unit, navigateBack: () -> Unit = {}
+        factory = AppViewModelProvider.Factory
+    ), navigateToFilteredImages: (String, Int) -> Unit, navigateBack: () -> Unit = {}
 ) {
 
     val filterUiState by viewModel.filterUiState.collectAsState()
     val filterType = filterUiState.filterType
 
-    val filterContent: List<Any> = (if (filterType == Filters.ARTIST.name)
-        filterUiState
-            .artistList else filterUiState.categoryList)
+    val filterContent: List<Any> =
+        (if (filterType == Filters.ARTIST.name) filterUiState.artistList else filterUiState.categoryList)
 
     Scaffold(
         topBar = {
-        ArtVendorAppTopBar(
-            currentScreen = FilterDestination, canNavigateBack =
-                true, navigateUp = navigateBack
-        )
-    }) { innerPadding ->
-        Box(modifier = modifier.padding(innerPadding))
-        {
+            ArtVendorAppTopBar(
+                currentScreen = FilterDestination, canNavigateBack = true, navigateUp = navigateBack
+            )
+        }) { innerPadding ->
+        Box(modifier = modifier.padding(innerPadding)) {
             Column(
                 modifier = modifier.padding(dimensionResource(R.dimen.padding_medium)),
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
             ) {
                 filterContent.map { filter ->
                     CategoryButton(
-                        filter = filter,
-                        navigateToFilteredImages = navigateToFilteredImages
+                        filter = filter, navigateToFilteredImages = navigateToFilteredImages
                     )
                 }
 
@@ -78,9 +71,7 @@ fun FilterScreen(
 
 @Composable
 fun <T> CategoryButton(
-    modifier: Modifier = Modifier, filter: T, navigateToFilteredImages:
-        (String, Int) ->
-    Unit
+    modifier: Modifier = Modifier, filter: T, navigateToFilteredImages: (String, Int) -> Unit
 ) {
     when (filter) {
         is ArtistDto -> {

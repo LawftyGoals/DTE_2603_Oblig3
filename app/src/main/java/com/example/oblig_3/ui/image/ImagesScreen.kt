@@ -33,6 +33,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -55,20 +56,16 @@ object ImagesDestination : NavigationDestination {
 
 @Composable
 fun ImagesScreen(
-    modifier: Modifier = Modifier,
-    viewModel: ImagesViewModel = viewModel(
-        factory
-        = AppViewModelProvider.Factory
-    ),
-    navigateToImagePreview: (Int) -> Unit = {}, navigateBack: () -> Unit = {}
+    modifier: Modifier = Modifier, viewModel: ImagesViewModel = viewModel(
+        factory = AppViewModelProvider.Factory
+    ), navigateToImagePreview: (Int) -> Unit = {}, navigateBack: () -> Unit = {}
 ) {
     val imageUiState by viewModel.imagesUiState.collectAsState()
     val images = imageUiState.filteredImages
 
     Scaffold(topBar = {
         ArtVendorAppTopBar(
-            currentScreen = ImagesDestination, canNavigateBack = true,
-            navigateUp = navigateBack
+            currentScreen = ImagesDestination, canNavigateBack = true, navigateUp = navigateBack
         )
     }) { innerPadding ->
         Column(
@@ -76,15 +73,16 @@ fun ImagesScreen(
                 .fillMaxSize()
                 .padding(dimensionResource(R.dimen.padding_small))
         ) {
-            if (images.count() < 1) {
-                Text(stringResource(R.string.no_images_found))
+            if (images.isEmpty()) {
+                Column(modifier = Modifier.padding(innerPadding)) {
+                    Text(text = stringResource(R.string.no_images_found), fontSize = 24.sp)
+                }
             } else {
                 LazyVerticalGrid(
                     modifier = Modifier
                         .padding(innerPadding)
                         .weight(1f),
-                    columns =
-                        GridCells.Fixed(2),
+                    columns = GridCells.Fixed(2),
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium)),
                     verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
                 ) {
@@ -114,27 +112,24 @@ fun ImageCard(image: ImageForUi, onNextButtonClick: (Int) -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = image.category?.name ?: stringResource(R.string.placeholder))
+        Text(text = image.category.name)
         AsyncImage(
             modifier = Modifier
                 .border(
-                    (FrameSize.SMALL.size).dp,
-                    FrameType.WOOD.color
+                    (FrameSize.SMALL.size).dp, FrameType.WOOD.color
                 )
-                .fillMaxWidth(), contentScale = ContentScale.FillWidth,
-            model = ImageRequest.Builder(context = LocalContext.current).data(image.imageThumbUrl)
-                .crossfade(true).build(),
+                .fillMaxWidth(),
+            contentScale = ContentScale.FillWidth,
+            model = image.imageThumbUrl,
             error = painterResource(R.drawable.ic_launcher_background),
             placeholder = painterResource(R.drawable.ic_launcher_foreground),
             contentDescription = "${image.title} ${
-                image
-                    .artist?.firstName
-            } ${image.artist?.lastName}"
+                image.artist.firstName
+            } ${image.artist.lastName}"
         )
 
     }
-}
-/*
+}/*
 @Preview(showBackground = true)
 @Composable
 fun ImagePreview() {
