@@ -14,17 +14,17 @@ object DataSource {
         Artist(5, "Cleatus", "Cleatusson")
     )
 
-    val photos = listOf(
-        Photo(1L, "My first attempt", R.drawable.image1, artists[0], Category.NATURE, 100f ),
-        Photo(2L, "My first attempt", R.drawable.image2, artists[1], Category.FOOD, 150f ),
-        Photo(3L, "My first attempt", R.drawable.image3, artists[2], Category.SPORT, 180f ),
-        Photo(4L, "My first attempt", R.drawable.image4, artists[3], Category.NATURE, 190f ),
-        Photo(5L, "My first attempt", R.drawable.image5, artists[0], Category.FOOD, 10f ),
-        Photo(8L, "My first attempt", R.drawable.image6, artists[1], Category.SPORT, 120f ),
-        Photo(9L, "My first attempt", R.drawable.image7, artists[2], Category.NATURE, 130f ),
-        Photo(10L, "My first attempt", R.drawable.image8, artists[3], Category.FOOD, 140f ),
-        Photo(11L, "My first attempt", R.drawable.image9, artists[4], Category.SPORT, 150f ),
-        Photo(12L, "My first attempt", R.drawable.image10, artists[4], Category.NATURE, 160f )
+    val images = listOf(
+        Image(1L, "My first attempt", R.drawable.image1, artists[0], Category.NATURE, 100f ),
+        Image(2L, "My first attempt", R.drawable.image2, artists[1], Category.FOOD, 150f ),
+        Image(3L, "My first attempt", R.drawable.image3, artists[2], Category.SPORT, 180f ),
+        Image(4L, "My first attempt", R.drawable.image4, artists[3], Category.NATURE, 190f ),
+        Image(5L, "My first attempt", R.drawable.image5, artists[0], Category.FOOD, 10f ),
+        Image(8L, "My first attempt", R.drawable.image6, artists[1], Category.SPORT, 120f ),
+        Image(9L, "My first attempt", R.drawable.image7, artists[2], Category.NATURE, 130f ),
+        Image(10L, "My first attempt", R.drawable.image8, artists[3], Category.FOOD, 140f ),
+        Image(11L, "My first attempt", R.drawable.image9, artists[4], Category.SPORT, 150f ),
+        Image(12L, "My first attempt", R.drawable.image10, artists[4], Category.NATURE, 160f )
 
     )
 
@@ -33,13 +33,13 @@ object DataSource {
 
     val frames = FrameType.entries.toList()
 
-    val photoSizes = PhotoSize.entries.toList()
+    val imageSizes = ImageSize.entries.toList()
 
     val frameSizes = FrameSize.entries.toList()
 
 }
 
-data class Photo(
+data class Image(
     val id: Long,
     val title: String = "",
     @DrawableRes
@@ -72,7 +72,7 @@ enum class FrameType(val extraPrice: Float, val color: Color = Color.Yellow, @St
     PLASTIC(30f, color = Color.Green, title=R.string.plastic)
 }
 
-enum class PhotoSize(val extraPrice: Float, val size: Int = 170, @StringRes val title: Int) {
+enum class ImageSize(val extraPrice: Float, val size: Int = 170, @StringRes val title: Int) {
     SMALL(0f, size=170, title = R.string.small),
     MEDIUM(130f, size=200, title = R.string.medium),
     LARGE(230f, size=250, title = R.string.large)
@@ -86,27 +86,29 @@ enum class FrameSize(val extraPrice: Float, val size: Int = 10){
 }
 
 val testArtist = Artist(-1)
-val testPhoto = Photo(id= -1L,imageResId=R.drawable.ic_launcher_background, artist=testArtist, category=Category.NATURE)
+val testImage = Image(id= -1L,imageResId=R.drawable.ic_launcher_background, artist=testArtist, category=Category.NATURE)
 
-/*class PurchaseItem(var id: Int = -1, var photo: Photo = testPhoto, var size: PhotoSize =
-    PhotoSize.SMALL, val frameType: FrameType = FrameType.WOOD, val frameSize: FrameSize = FrameSize.SMALL){
+/*class PurchaseItem(var id: Int = -1, var image: Image = testImage, var size: ImageSize =
+    ImageSize.SMALL, val frameType: FrameType = FrameType.WOOD, val frameSize: FrameSize = FrameSize.SMALL){
     fun getCost(): Float {
-        val tempPhoto = photo
-        return (tempPhoto.price
+        val tempImage = image
+        return (tempImage.price
             + size.extraPrice + frameType.extraPrice + frameSize.extraPrice)
     }
-}*/
+}
+*/
 
+/*
 class PurchaseItemDto(
-    var id: Int?, val photo: Photo = testPhoto, val photoSize: PhotoSize =
-    PhotoSize.SMALL, val frameType: FrameType = FrameType.WOOD, val frameSize: FrameSize =
+    var id: Int?, var image: Image = testImage, val imageSize: ImageSize =
+    ImageSize.SMALL, val frameType: FrameType = FrameType.WOOD, val frameSize: FrameSize =
         FrameSize.SMALL){
 
     fun getCost(): Float {
 
-       return photo.price + photoSize.extraPrice + frameType.extraPrice + frameSize
+       return image.price + imageSize.extraPrice + frameType.extraPrice + frameSize
            .extraPrice
     }
 
 }
-
+*/

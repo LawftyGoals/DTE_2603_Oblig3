@@ -3,7 +3,7 @@ package com.example.oblig_3.network
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PhotoDto(val id: Int,
+data class ImageDto(val id: Int,
                      val title: String,
                      val imageThumbUrl: String,
                      val imageUrl: String,
@@ -18,7 +18,7 @@ data class CategoryDto(val id: Int, val name: String)
 data class ArtistDto(val id: Int, val firstName: String, val lastName: String)
 
 @Serializable
-data class PhotoSizeDto(val id: Int, val name: String, val size: Int, val extraPrice: Float)
+data class ImageSizeDto(val id: Int, val name: String, val size: Int, val extraPrice: Float)
 
 @Serializable
 data class FrameTypeDto(val id: Int, val name: String, val color: String, val extraPrice: Float)

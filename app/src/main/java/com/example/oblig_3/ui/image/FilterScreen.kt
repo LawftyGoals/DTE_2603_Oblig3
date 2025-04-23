@@ -22,8 +22,6 @@ import com.example.oblig_3.R
 import com.example.oblig_3.network.ArtistDto
 import com.example.oblig_3.network.CategoryDto
 import com.example.oblig_3.ui.AppViewModelProvider
-import com.example.oblig_3.ui.data.Artist
-import com.example.oblig_3.ui.data.Category
 import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.navigation.NavigationDestination
 

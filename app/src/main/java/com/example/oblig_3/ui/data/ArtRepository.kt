@@ -5,23 +5,23 @@ import com.example.oblig_3.network.ArtistDto
 import com.example.oblig_3.network.CategoryDto
 import com.example.oblig_3.network.FrameSizeDto
 import com.example.oblig_3.network.FrameTypeDto
-import com.example.oblig_3.network.PhotoDto
-import com.example.oblig_3.network.PhotoSizeDto
+import com.example.oblig_3.network.ImageDto
+import com.example.oblig_3.network.ImageSizeDto
 
 interface ArtRepository {
     //PHOTOS
-    suspend fun getPhotos(): List<PhotoDto>
-    suspend fun getPhotoById(id: Int): PhotoDto
-    suspend fun getPhotosByCategory(categoryId: Int): List<PhotoDto>
-    suspend fun getPhotosByArtist(artistId: Int): List<PhotoDto>
+    suspend fun getImages(): List<ImageDto>
+    suspend fun getImageById(id: Int): ImageDto
+    suspend fun getImagesByCategory(categoryId: Int): List<ImageDto>
+    suspend fun getImagesByArtist(artistId: Int): List<ImageDto>
     //Categories
     suspend fun getAllCategories(): List<CategoryDto>
     suspend fun getCategoryById(id: Int): CategoryDto
     //Artists
     suspend fun getAllArtists(): List<ArtistDto>
     suspend fun getArtistById(id: Int): ArtistDto
-    //PhotoSizes
-    suspend fun getAllPhotoSizes(): List<PhotoSizeDto>
+    //ImageSizes
+    suspend fun getAllImageSizes(): List<ImageSizeDto>
     //FrameType
     suspend fun getAllFrameTypes(): List<FrameTypeDto>
     //FrameSize
@@ -30,21 +30,21 @@ interface ArtRepository {
 
 class NetworkArtRepository(private val artApiService: ArtApiService):ArtRepository {
 
-    //Photos
-    override suspend fun getPhotos(): List<PhotoDto> {
-        return artApiService.getAllPhotos()
+    //Images
+    override suspend fun getImages(): List<ImageDto> {
+        return artApiService.getAllImages()
     }
 
-    override suspend fun getPhotoById(id: Int): PhotoDto {
-        return artApiService.getPhotoById(id)
+    override suspend fun getImageById(id: Int): ImageDto {
+        return artApiService.getImageById(id)
     }
 
-    override suspend fun getPhotosByCategory(categoryId: Int): List<PhotoDto> {
-        return artApiService.getPhotosByCategory(categoryId)
+    override suspend fun getImagesByCategory(categoryId: Int): List<ImageDto> {
+        return artApiService.getImagesByCategory(categoryId)
     }
 
-    override suspend fun getPhotosByArtist(artistId: Int): List<PhotoDto> {
-        return artApiService.getPhotosByArtist(artistId)
+    override suspend fun getImagesByArtist(artistId: Int): List<ImageDto> {
+        return artApiService.getImagesByArtist(artistId)
     }
 
     //Categories
@@ -63,9 +63,9 @@ class NetworkArtRepository(private val artApiService: ArtApiService):ArtReposito
         return artApiService.getArtistById(id)
     }
 
-    //PhotoSizes
-    override suspend fun getAllPhotoSizes(): List<PhotoSizeDto> {
-        return artApiService.getAllPhotoSizes()
+    //ImageSizes
+    override suspend fun getAllImageSizes(): List<ImageSizeDto> {
+        return artApiService.getAllImageSizes()
     }
 
     //FrameType

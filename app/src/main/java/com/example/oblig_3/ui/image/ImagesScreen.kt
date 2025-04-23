@@ -38,11 +38,9 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.oblig_3.ArtVendorAppTopBar
-import com.example.oblig_3.network.PhotoDto
 import com.example.oblig_3.ui.AppViewModelProvider
 import com.example.oblig_3.ui.data.FrameSize
 import com.example.oblig_3.ui.data.FrameType
-import com.example.oblig_3.ui.data.Photo
 import com.example.oblig_3.ui.navigation.NavigationDestination
 
 
@@ -65,7 +63,7 @@ fun ImagesScreen(
     navigateToImagePreview: (Int) -> Unit = {}, navigateBack: () -> Unit = {}
 ) {
     val imageUiState by viewModel.imagesUiState.collectAsState()
-    val photos = imageUiState.filteredPhotos
+    val images = imageUiState.filteredImages
 
     Scaffold(topBar = {
         ArtVendorAppTopBar(
@@ -78,7 +76,7 @@ fun ImagesScreen(
                 .fillMaxSize()
                 .padding(dimensionResource(R.dimen.padding_small))
         ) {
-            if (photos.count() < 1) {
+            if (images.count() < 1) {
                 Text(stringResource(R.string.no_images_found))
             } else {
                 LazyVerticalGrid(
@@ -90,8 +88,8 @@ fun ImagesScreen(
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium)),
                     verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
                 ) {
-                    items(items = photos) { photo ->
-                        ImageCard(photo, navigateToImagePreview)
+                    items(items = images) { image ->
+                        ImageCard(image, navigateToImagePreview)
                     }
                 }
             }
@@ -101,22 +99,22 @@ fun ImagesScreen(
 }
 
 @Composable
-fun ImageCard(photo: PhotoForUi, onNextButtonClick: (Int) -> Unit) {
+fun ImageCard(image: ImageForUi, onNextButtonClick: (Int) -> Unit) {
 
     Column(
         modifier = Modifier
-            .testTag("photo-${photo.id}")
+            .testTag("image-${image.id}")
             .height(200.dp)
             .background(
                 MaterialTheme.colorScheme.tertiaryContainer,
                 shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))
             )
             .padding(dimensionResource(R.dimen.padding_small))
-            .clickable { onNextButtonClick(photo.id) },
+            .clickable { onNextButtonClick(image.id) },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = photo.category?.name ?: stringResource(R.string.placeholder))
+        Text(text = image.category?.name ?: stringResource(R.string.placeholder))
         AsyncImage(
             modifier = Modifier
                 .border(
@@ -124,48 +122,17 @@ fun ImageCard(photo: PhotoForUi, onNextButtonClick: (Int) -> Unit) {
                     FrameType.WOOD.color
                 )
                 .fillMaxWidth(), contentScale = ContentScale.FillWidth,
-            model = ImageRequest.Builder(context = LocalContext.current).data(photo.imageThumbUrl)
+            model = ImageRequest.Builder(context = LocalContext.current).data(image.imageThumbUrl)
                 .crossfade(true).build(),
             error = painterResource(R.drawable.ic_launcher_background),
             placeholder = painterResource(R.drawable.ic_launcher_foreground),
-            contentDescription = "${photo.title} ${
-                photo
+            contentDescription = "${image.title} ${
+                image
                     .artist?.firstName
-            } ${photo.artist?.lastName}"
+            } ${image.artist?.lastName}"
         )
 
     }
-    /*
-    val image = painterResource(photo.imageResId)
-    Column(
-        modifier = Modifier
-            .testTag("photo-${photo.id}")
-            .height(200.dp)
-            .background(
-                MaterialTheme.colorScheme.tertiaryContainer,
-                shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_small))
-            )
-            .padding(dimensionResource(R.dimen.padding_small))
-            .clickable { onNextButtonClick(photo) },
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = photo.category.name)
-        Image(
-            modifier = Modifier
-                .border(
-                    (FrameSize.SMALL.size).dp,
-                    FrameType.WOOD.color
-                )
-                .fillMaxWidth(), contentScale = ContentScale.FillWidth,
-            painter = image, contentDescription = "${photo.title} ${
-                photo
-                    .artist.name
-            } ${photo.artist.familyName}"
-        )
-
-    }*/
-
 }
 /*
 @Preview(showBackground = true)

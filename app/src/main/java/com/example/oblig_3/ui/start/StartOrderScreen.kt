@@ -30,11 +30,7 @@ import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.navigation.NavigationDestination
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oblig_3.ArtVendorAppTopBar
-import com.example.oblig_3.ui.ArtVendorViewModel
-import com.example.oblig_3.ui.StartViewModel
-import com.example.oblig_3.ui.data.DataSource.photos
-import com.example.oblig_3.ui.data.PurchaseItemDto
-import com.example.oblig_3.ui.data.testPhoto
+import com.example.oblig_3.ui.data.PurchaseItem
 import java.util.Locale
 
 
@@ -52,22 +48,17 @@ fun StartOrderScreen(
 ) {
 
     val shoppingCartState by viewModel.shoppingCartState.collectAsState()
+    val purchaseItemList = shoppingCartState.purchaseItemList
+
     Scaffold(modifier = modifier, topBar = {
         ArtVendorAppTopBar(
-            currentScreen = StartDestination,
-            canNavigateBack = false
+            currentScreen = StartDestination, canNavigateBack = false
         )
     }) { innerPadding ->
         StartOrderBody(
             modifier = modifier.padding(innerPadding),
             navigateToFilter = navigateToFilter,
-            purchaseItemCart = shoppingCartState.purchaseItemList.map{purchaseItem ->
-                val photo = photos.find{ photo -> photo.id ==
-                        purchaseItem.photoId.toLong()} ?: testPhoto
-                val photoSize = purchaseItem.photoSize
-                PurchaseItemDto(id = purchaseItem.id, photo=photo, photoSize=photoSize, frameType
-                = purchaseItem.frameType, frameSize = purchaseItem.frameSize
-                )},
+            purchaseItemCart = purchaseItemList,
             deleteFromPurchaseItemCart = { id -> viewModel.removeFromShoppingCart(id) },
             navigateToPurchase
         )
@@ -77,8 +68,11 @@ fun StartOrderScreen(
 
 @Composable
 fun StartOrderBody(
-    modifier: Modifier = Modifier, navigateToFilter: (Filters) -> Unit, purchaseItemCart: List<PurchaseItemDto>,
-    deleteFromPurchaseItemCart: (Int) -> Unit, navigateToPurchase: () -> Unit
+    modifier: Modifier = Modifier,
+    navigateToFilter: (Filters) -> Unit,
+    purchaseItemCart: List<PurchaseItem>,
+    deleteFromPurchaseItemCart: (Int) -> Unit,
+    navigateToPurchase: () -> Unit
 ) {
 
     val totalCost = calculateTotalPrice(purchaseItemCart)
@@ -114,9 +108,7 @@ fun StartOrderBody(
         Text(
             "${stringResource(R.string.total_price)} ${
                 String.format(
-                    Locale.getDefault(),
-                    "%.2f",
-                    totalCost
+                    Locale.getDefault(), "%.2f", totalCost
                 )
             }", style = MaterialTheme.typography.labelLarge
         )
@@ -130,7 +122,7 @@ fun StartOrderBody(
                 purchaseItemCart.map { purchaseItem ->
                     PurchaseItemCard(
                         purchaseItem = purchaseItem,
-                        onDeleteClicked = { deleteFromPurchaseItemCart(purchaseItem.id ?: 0) })
+                        onDeleteClicked = { deleteFromPurchaseItemCart(purchaseItem.id) })
                 }
             }
         }
@@ -145,9 +137,7 @@ fun StartOrderBody(
 
 @Composable
 fun PurchaseItemCard(
-    modifier: Modifier = Modifier,
-    purchaseItem: PurchaseItemDto,
-    onDeleteClicked: (Int) -> Unit
+    modifier: Modifier = Modifier, purchaseItem: PurchaseItem, onDeleteClicked: (Int) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -163,17 +153,17 @@ fun PurchaseItemCard(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 style = MaterialTheme.typography.displayMedium,
-                text = purchaseItem.photo.artist.name.toString()
+                text = purchaseItem.artistFirstName.toString()
             )
-            Text(text = purchaseItem.photo.artist.familyName.toString())
+            Text(text = purchaseItem.artistLastName.toString())
         }
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = stringResource(purchaseItem.frameType.title))
-            Text(text = stringResource(purchaseItem.photoSize.title))
+            Text(text = stringResource(convertValueToStringResource(purchaseItem.frameTypeName)))
+            Text(text = stringResource(convertValueToStringResource(purchaseItem.imageSizeName)))
         }
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = purchaseItem.frameSize.size.toString())
-            Text(text = String.format(Locale.getDefault(), "%.2f", purchaseItem.photo.price))
+            Text(text = purchaseItem.frameSizeValue.toString())
+            Text(text = String.format(Locale.getDefault(), "%.2f", purchaseItem.price))
         }
         IconButton(
             modifier = Modifier
@@ -182,10 +172,21 @@ fun PurchaseItemCard(
                 .background(
                     MaterialTheme.colorScheme.primaryContainer,
                     shape = RoundedCornerShape(dimensionResource(R.dimen.rounded_corner_medium))
-                ),
-            onClick = { onDeleteClicked(purchaseItem.id ?: 0) }) {
+                ), onClick = { onDeleteClicked(purchaseItem.id) }) {
             Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete purchase item")
         }
+    }
+}
+
+fun convertValueToStringResource(value: String): Int {
+    when (value) {
+        "Wood" -> return R.string.wood
+        "Metal" -> return R.string.metal
+        "Plastic" -> return R.string.plastic
+        "Small" -> return R.string.small
+        "Medium" -> return R.string.medium
+        "Large" -> return R.string.large
+        else -> return R.string.placeholder
     }
 }
 

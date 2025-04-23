@@ -9,29 +9,29 @@ import retrofit2.http.Query
 
 
 interface ArtApiService {
-    //Photos
+    //Images
     // *** GET
     @Headers("Content-Type: application/json", "User-Agent: android", "Accept: application/json")
     @GET("/photos")
-    suspend fun getAllPhotos(): List<PhotoDto>
+    suspend fun getAllImages(): List<ImageDto>
 
     @Headers(
         "Content-Type: application/json", "User-Agent: android", "Accept: application/json"
     )
     @GET("/photos/{id}")
-    suspend fun getPhotoById(@Path("id") id: Int): PhotoDto
+    suspend fun getImageById(@Path("id") id: Int): ImageDto
 
     @Headers(
         "Content-Type: application/json", "User-Agent: android", "Accept: application/json"
     )
     @GET("/photos")
-    suspend fun getPhotosByCategory(@Query("categoryId") categoryId: Int): List<PhotoDto>
+    suspend fun getImagesByCategory(@Query("categoryId") categoryId: Int): List<ImageDto>
 
     @Headers(
         "Content-Type: application/json", "User-Agent: android", "Accept: application/json"
     )
     @GET("/photos")
-    suspend fun getPhotosByArtist(@Query("artistId") artistId: Int): List<PhotoDto>
+    suspend fun getImagesByArtist(@Query("artistId") artistId: Int): List<ImageDto>
 
 
     //Categories
@@ -58,10 +58,10 @@ interface ArtApiService {
     suspend fun getArtistById(@Path("id") id: Int): ArtistDto
 
 
-    //PhotoSizes
+    //ImageSizes
     @Headers("Content-Type: application/json", "User-Agent: android", "Accept: application/json")
     @GET("/photosizes")
-    suspend fun getAllPhotoSizes(): List<PhotoSizeDto>
+    suspend fun getAllImageSizes(): List<ImageSizeDto>
 
 
     //FrameSizes

@@ -7,17 +7,12 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.oblig_3.ArtVendorApplication
 import com.example.oblig_3.ui.image.FilterViewModel
+import com.example.oblig_3.ui.image.ImagePreviewViewModel
 import com.example.oblig_3.ui.image.ImagesViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
 
-        initializer {
-            ArtVendorViewModel(
-                artVendorApplication().appContainer
-                    .purchaseItemsRepository
-            )
-        }
 
         initializer {
             FilterViewModel(
@@ -31,6 +26,10 @@ object AppViewModelProvider {
                 this.createSavedStateHandle(),
                 artVendorApplication().appContainer.artRepository
             )
+        }
+
+        initializer {
+            ImagePreviewViewModel(this.createSavedStateHandle(), artVendorApplication().appContainer.artRepository, artVendorApplication().appContainer.purchaseItemsRepository)
         }
 
         initializer { StartViewModel(artVendorApplication().appContainer.purchaseItemsRepository) }

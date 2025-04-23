@@ -1,13 +1,11 @@
 package com.example.oblig_3.ui.image
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,27 +17,32 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.example.oblig_3.ArtVendorAppTopBar
 import com.example.oblig_3.R
-import com.example.oblig_3.ui.data.DataSource
-import com.example.oblig_3.ui.data.FrameSize
-import com.example.oblig_3.ui.data.FrameType
-import com.example.oblig_3.ui.data.Photo
-import com.example.oblig_3.ui.data.PhotoSize
-import com.example.oblig_3.ui.data.PurchaseItemDto
-import com.example.oblig_3.ui.data.testPhoto
+import com.example.oblig_3.ui.AppViewModelProvider
+import com.example.oblig_3.network.ImageSizeDto
 import com.example.oblig_3.ui.navigation.NavigationDestination
 import com.example.oblig_3.ui.start.StartDestination
+import androidx.core.graphics.toColorInt
+import coil3.request.crossfade
+import com.example.oblig_3.network.FrameSizeDto
+import com.example.oblig_3.network.FrameTypeDto
 
 
 object ImagePreviewDestination : NavigationDestination {
@@ -53,117 +56,113 @@ object ImagePreviewDestination : NavigationDestination {
 @Composable
 fun ImagePreviewScreen(
     modifier: Modifier = Modifier,
-    photo: Photo = testPhoto,
-    currentPurchaseItem: PurchaseItemDto,
-    updateCurrentPurchaseItem: (PurchaseItemDto) -> Unit = {},
-    navigateToHomeScreen: (PurchaseItemDto?) -> Unit,
-    navigateBack: ()->Unit = {}
+    viewModel: ImagePreviewViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navigateToHomeScreen: () -> Unit,
+    navigateBack: () -> Unit = {}
 ) {
 
-    Scaffold(topBar={ArtVendorAppTopBar(
-        currentScreen = StartDestination,
-        canNavigateBack = true,
-        navigateUp = navigateBack
-    )}){ innerPadding ->
-    if (photo.id == -1L) {
-        Text(modifier = Modifier.padding(innerPadding), text = stringResource(R.string
-            .no_photo_chosen))
-    } else {
-        val image = painterResource(photo.imageResId)
+    val previewUiState by viewModel.previewUiState.collectAsState()
+    val image = previewUiState.image
+    val currentPurchaseItem = previewUiState.currentPurchaseItem
 
-        Column(
-            modifier
-                .fillMaxSize()
-                .padding(dimensionResource(R.dimen.padding_small)),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            //PHOTO REPRESENTATION
-            ImageContainer(image = image, photo = photo, currentPurchaseItem = currentPurchaseItem)
-
-            //FIRST ROW OF RADIO BUTTONS
+    Scaffold(topBar = {
+        ArtVendorAppTopBar(
+            currentScreen = StartDestination, canNavigateBack = true, navigateUp = navigateBack
+        )
+    }) { innerPadding ->
+        if (image == null || currentPurchaseItem == null) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_small)),
-                style = MaterialTheme.typography.labelLarge,
-                text = stringResource(R.string.choose_border_and_size)
-            )
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                SelectFrameType(
-                    updatePurchaseItem = { frameType ->
-                        updateCurrentPurchaseItem(
-                            PurchaseItemDto(
-                                id = 1,
-                                photo = photo,
-                                photoSize = currentPurchaseItem.photoSize,
-                                frameType = frameType,
-                                frameSize = currentPurchaseItem.frameSize)
-
-                        )
-                    },
-                    selected = currentPurchaseItem.frameType
+                modifier = Modifier.padding(innerPadding), text = stringResource(
+                    R.string.no_photo_chosen
                 )
-                SelectPhotoSize(
-                    selected = currentPurchaseItem.photoSize,
-                    updatePurchaseItem = { photoSize ->
-                        updateCurrentPurchaseItem(
-                            PurchaseItemDto(
-                                id = 1,
-                                photo = photo,
-                                photoSize = photoSize,
-                                frameType = currentPurchaseItem.frameType,
-                                frameSize = currentPurchaseItem.frameSize
-                            )
-                        )
-                    })
-            }
-
-            //SECOND ROW OF RADIO BUTTONS
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_small)),
-                style = MaterialTheme.typography.labelLarge,
-                text = stringResource(R.string.chose_border_size)
             )
-            SelectFrameSize(
-                selected = currentPurchaseItem.frameSize,
-                updatePurchaseItem = { frameSize ->
-                    updateCurrentPurchaseItem(
-                        PurchaseItemDto(
-                            id = 1,
-                            photo = photo,
-                            photoSize = currentPurchaseItem.photoSize,
-                            frameType = currentPurchaseItem.frameType,
-                            frameSize = frameSize
-                        )
+        } else {
+
+            Column(
+                modifier
+                    .fillMaxSize()
+                    .padding(dimensionResource(R.dimen.padding_small)),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                //PHOTO REPRESENTATION
+                ImageContainer(image = image, currentPurchaseItem = currentPurchaseItem)
+
+                //FIRST ROW OF RADIO BUTTONS
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_small)),
+                    style = MaterialTheme.typography.labelLarge,
+                    text = stringResource(R.string.choose_border_and_size)
+                )
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                    SelectFrameType(
+                        updatePurchaseItem = { frameType ->
+                            val newPurchaseItemDto = currentPurchaseItem.copy()
+                            newPurchaseItemDto.frameType = frameType
+                            viewModel.updateCurrentPurchaseItem(
+                                newPurchaseItemDto
+                            )
+                        },
+                        selected = currentPurchaseItem.frameType,
+                        frames = previewUiState.frameTypes
                     )
-                })
-
-            //NAVIGATION BUTTONS
-            Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))) {
-                Button(onClick = {
-                    navigateToHomeScreen(currentPurchaseItem)
-                }) {
-                    Text(stringResource(R.string.add_to_cart))
+                    SelectImageSize(
+                        selected = currentPurchaseItem.imageSize,
+                        updatePurchaseItem = { imageSize ->
+                            val newPurchaseItemDto = currentPurchaseItem.copy()
+                            newPurchaseItemDto.imageSize = imageSize
+                            viewModel.updateCurrentPurchaseItem(
+                                newPurchaseItemDto
+                            )
+                        },
+                        sizes = previewUiState.imageSizes
+                    )
                 }
-                Button(onClick = { navigateToHomeScreen(null) }) {
-                    Text(stringResource(R.string.home))
-                }
 
+                //SECOND ROW OF RADIO BUTTONS
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_small)),
+                    style = MaterialTheme.typography.labelLarge,
+                    text = stringResource(R.string.chose_border_size)
+                )
+                SelectFrameSize(
+                    selected = currentPurchaseItem.frameSize, updatePurchaseItem = { frameSize ->
+                        val newPurchaseItemDto = currentPurchaseItem.copy()
+                        newPurchaseItemDto.frameSize = frameSize
+                        viewModel.updateCurrentPurchaseItem(
+                            newPurchaseItemDto
+                        )
+                    }, sizes = previewUiState.frameSizes
+                )
+
+                //NAVIGATION BUTTONS
+                Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_large))) {
+                    Button(onClick = {
+                        viewModel.addImageToShoppingCart()
+                        navigateToHomeScreen()
+                    }) {
+                        Text(stringResource(R.string.add_to_cart))
+                    }
+                    Button(onClick = { navigateToHomeScreen() }) {
+                        Text(stringResource(R.string.home))
+                    }
+
+                }
             }
         }
-    }
     }
 }
 
 @Composable
 fun SelectFrameType(
     modifier: Modifier = Modifier,
-    selected: FrameType,
-    frames: List<FrameType> = DataSource.frames,
-    updatePurchaseItem: (FrameType) -> Unit
+    selected: FrameTypeDto,
+    frames: List<FrameTypeDto>,
+    updatePurchaseItem: (FrameTypeDto) -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -173,7 +172,7 @@ fun SelectFrameType(
             Row(
                 modifier = Modifier
                     .testTag(frame.name)
-                    .selectable(selected = frame == selected, onClick = {
+                    .selectable(selected = frame.id == selected.id, onClick = {
                         updatePurchaseItem(frame)
                     }, role = Role.RadioButton),
                 verticalAlignment = Alignment.CenterVertically,
@@ -182,7 +181,7 @@ fun SelectFrameType(
                 RadioButton(
                     selected = frame == selected, onClick = null
                 )
-                Text(text = stringResource(frame.title))
+                Text(text = stringResource(frame.id))
 
             }
         }
@@ -190,10 +189,11 @@ fun SelectFrameType(
 }
 
 @Composable
-fun SelectPhotoSize(
-    modifier: Modifier = Modifier, sizes: List<PhotoSize> = DataSource.photoSizes,
-    selected: PhotoSize,
-    updatePurchaseItem: (PhotoSize) -> Unit
+fun SelectImageSize(
+    modifier: Modifier = Modifier,
+    sizes: List<ImageSizeDto>,
+    selected: ImageSizeDto,
+    updatePurchaseItem: (ImageSizeDto) -> Unit
 ) {
 
     Column(
@@ -202,14 +202,14 @@ fun SelectPhotoSize(
     ) {
         sizes.map { size ->
             Row(
-                modifier = Modifier.selectable(selected = size == selected, onClick = {
+                modifier = Modifier.selectable(selected = size.size == selected.size, onClick = {
                     updatePurchaseItem(size)
                 }, role = Role.RadioButton),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
             ) {
                 RadioButton(selected = size == selected, onClick = null)
-                Text(text = stringResource(size.title))
+                Text(text = stringResource(size.size))
             }
         }
 
@@ -218,9 +218,10 @@ fun SelectPhotoSize(
 
 @Composable
 fun SelectFrameSize(
-    modifier: Modifier = Modifier, sizes: List<FrameSize> = DataSource.frameSizes,
-    selected: FrameSize,
-    updatePurchaseItem: (FrameSize) -> Unit
+    modifier: Modifier = Modifier,
+    sizes: List<FrameSizeDto>,
+    selected: FrameSizeDto,
+    updatePurchaseItem: (FrameSizeDto) -> Unit
 ) {
 
     Row(
@@ -248,10 +249,7 @@ fun SelectFrameSize(
 
 @Composable
 fun ImageContainer(
-    modifier: Modifier = Modifier,
-    image: Painter,
-    photo: Photo,
-    currentPurchaseItem: PurchaseItemDto
+    modifier: Modifier = Modifier, image: ImageForUi, currentPurchaseItem: PurchaseItemDto
 ) {
     Column(
         modifier
@@ -263,23 +261,21 @@ fun ImageContainer(
             .padding(dimensionResource(R.dimen.padding_small)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = photo.category.name)
+        Text(text = image.category.name)
         Box(
             modifier = Modifier.border(
                 width = currentPurchaseItem.frameSize.size.dp,
-                color = currentPurchaseItem.frameType.color
+                color = Color(currentPurchaseItem.frameType.color.toColorInt())
             )
         ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(image.intrinsicSize.width / image.intrinsicSize.height),
-                painter = image,
+            AsyncImage(
+                modifier = Modifier.fillMaxWidth(),
+                model = ImageRequest.Builder(context = LocalContext.current)
+                    .data(image.imageThumbUrl).crossfade(true).build(),
+                error = painterResource(R.drawable.ic_launcher_background),
+                placeholder = painterResource(R.drawable.ic_launcher_foreground),
                 contentScale = ContentScale.Fit,
-                contentDescription = "${photo.title} ${
-                    photo
-                        .artist.name
-                } ${photo.artist.familyName}"
+                contentDescription = "${image.title} ${currentPurchaseItem.image.artist.firstName} ${currentPurchaseItem.image.artist.lastName}"
             )
         }
     }

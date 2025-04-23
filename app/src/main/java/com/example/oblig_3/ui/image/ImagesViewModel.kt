@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.oblig_3.network.ArtistDto
 import com.example.oblig_3.network.CategoryDto
 import com.example.oblig_3.network.NetworkState
-import com.example.oblig_3.network.PhotoDto
+import com.example.oblig_3.network.ImageDto
 import com.example.oblig_3.network.getHttpErrorMessage
 import com.example.oblig_3.ui.data.ArtRepository
 import com.example.oblig_3.ui.data.Filters
@@ -34,20 +34,20 @@ class ImagesViewModel(
     val imagesUiState: StateFlow<ImagesUiState> = _imagesUiState.asStateFlow()
 
     init {
-        getPhotosByFilter(filterType, id)
+        getImagesByFilter(filterType, id)
 
     }
 
-    fun getPhotosByFilter(filterType: String, id: Int) {
+    fun getImagesByFilter(filterType: String, id: Int) {
         viewModelScope.launch {
 
             imagesUiState.value.networkState = NetworkState.Loading
 
             try {
-                val filteredPhotosDto: List<PhotoDto> = if (filterType == Filters.ARTIST.name) {
-                    artRepository.getPhotosByArtist(id)
+                val filteredImagesDto: List<ImageDto> = if (filterType == Filters.ARTIST.name) {
+                    artRepository.getImagesByArtist(id)
                 } else {
-                    artRepository.getPhotosByCategory(id)
+                    artRepository.getImagesByCategory(id)
                 }
 
                 val artists = artRepository.getAllArtists()
@@ -56,15 +56,15 @@ class ImagesViewModel(
                 _imagesUiState.update { currentState ->
                     currentState.copy(
                         networkState = NetworkState.Success("Success"),
-                        filteredPhotos = filteredPhotosDto.map { photoDto ->
-                            PhotoForUi(
-                                photoDto.id,
-                                photoDto.title,
-                                photoDto.imageThumbUrl,
-                                photoDto.imageUrl,
-                                artists.find { artist -> artist.id == photoDto.artistId },
-                                categories.find { category -> category.id == photoDto.categoryId },
-                                photoDto.price
+                        filteredImages = filteredImagesDto.map { imageDto ->
+                            ImageForUi(
+                                imageDto.id,
+                                imageDto.title,
+                                imageDto.imageThumbUrl,
+                                imageDto.imageUrl,
+                                artists.find { artist -> artist.id == imageDto.artistId } ?: artists[0],
+                                categories.find { category -> category.id == imageDto.categoryId } ?: categories[0],
+                                imageDto.price
                             )
                         }
                     )
@@ -95,15 +95,15 @@ class ImagesViewModel(
 }
 
 data class ImagesUiState(
-    var networkState: NetworkState = NetworkState.Loading, val filteredPhotos:
-    List<PhotoForUi> = listOf()
+    var networkState: NetworkState = NetworkState.Loading, val filteredImages:
+    List<ImageForUi> = listOf()
 )
 
-data class PhotoForUi(
+data class ImageForUi(
     val id: Int, val title: String,
     val imageThumbUrl: String,
     val imageUrl: String,
-    val artist: ArtistDto?,
-    val category: CategoryDto?,
+    val artist: ArtistDto,
+    val category: CategoryDto,
     val price: Float
 )

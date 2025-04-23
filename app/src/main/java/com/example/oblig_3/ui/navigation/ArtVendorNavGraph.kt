@@ -1,23 +1,14 @@
 package com.example.oblig_3.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.oblig_3.ArtVendorScreen
-import com.example.oblig_3.ui.AppViewModelProvider
-import com.example.oblig_3.ui.ArtVendorViewModel
-import com.example.oblig_3.ui.data.DataSource
-import com.example.oblig_3.ui.data.Filters
 import com.example.oblig_3.ui.image.ImagePreviewScreen
-import com.example.oblig_3.ui.data.PurchaseItemDto
-import com.example.oblig_3.ui.data.testPhoto
 import com.example.oblig_3.ui.image.FilterDestination
 import com.example.oblig_3.ui.image.FilterScreen
 import com.example.oblig_3.ui.image.ImagePreviewDestination
@@ -29,11 +20,9 @@ import com.example.oblig_3.ui.start.StartOrderScreen
 @Composable
 fun ArtVendorNavHost(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
-    viewModel: ArtVendorViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    navController: NavHostController
 ) {
 
-    val uiState by viewModel.uiState.collectAsState()
 
     NavHost(
         navController = navController,
@@ -72,18 +61,8 @@ fun ArtVendorNavHost(
         composable(route = ImagePreviewDestination.routeWithArgs, arguments = listOf(navArgument(
             ImagePreviewDestination.IMAGE_ID_ARG) {type = NavType.IntType})) {
             ImagePreviewScreen(
-                photo = uiState.targetPhoto,
-                currentPurchaseItem = uiState.currentPurchaseItem!!,
-                updateCurrentPurchaseItem = { purchaseItem ->
-                    viewModel.updateCurrentPurchaseItem(
-                        purchaseItem
-                    )
-                },
-                navigateToHomeScreen = { purchaseItem: PurchaseItemDto? ->
-                    if (purchaseItem != null) {
-                        //viewModel.addToShoppingCart(purchaseItem)
-                    }
-                    navController.navigate(ArtVendorScreen.Start.name)
+                navigateToHomeScreen = {
+                    navController.navigate(StartDestination.route)
                 },
                 navigateBack = {
                     navController.popBackStack()
